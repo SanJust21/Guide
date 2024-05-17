@@ -1,11 +1,14 @@
 package com.GuideAPP_AKS.img.secondSubHeading;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
-
+@Data
 @Entity
 @Table(name = "imgSub2")
 @CrossOrigin
+@Component
 public class ImgSubSecond {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +26,12 @@ public class ImgSubSecond {
 
     @Column(name = "malId")
     private String malId;
+
+    @Column(name = "fsEngUid")
+    private String fsEngUid;
+
+    @Column(name = "fsMalUid")
+    private String fsMalUid;
 
     public ImgSubSecond() {
     }

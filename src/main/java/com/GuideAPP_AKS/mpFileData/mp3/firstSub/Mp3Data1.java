@@ -23,6 +23,12 @@ public class Mp3Data1 {
     @Column(name = "dtId")
     private String dtId;
 
+    @Column(name ="mainEngId")
+    private String mainEngId;
+
+    @Column(name = "mainMalId")
+    private String mainMalId;
+
     public Mp3Data1(String fName, String fUrl, String dtId) {
         this.fName = fName;
         this.fUrl = fUrl;

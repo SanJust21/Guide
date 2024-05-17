@@ -22,6 +22,13 @@ public class Mp4Data1 {
 
     @Column(name = "dtId")
     private String dtId;
+
+    @Column(name ="mainEngId")
+    private String mainEngId;
+
+    @Column(name = "mainMalId")
+    private String mainMalId;
+
     @PrePersist
     @PreUpdate
     public void setDefault(){

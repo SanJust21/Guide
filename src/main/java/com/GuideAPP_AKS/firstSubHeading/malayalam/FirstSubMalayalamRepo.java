@@ -2,6 +2,7 @@ package com.GuideAPP_AKS.firstSubHeading.malayalam;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FirstSubMalayalamRepo extends JpaRepository<FirstSubMalayalam,Integer> {
@@ -10,4 +11,6 @@ public interface FirstSubMalayalamRepo extends JpaRepository<FirstSubMalayalam,I
     Optional<FirstSubMalayalam> findByFsUid(String uId);
 
     Optional<FirstSubMalayalam> findByfsUid(String malUid);
+
+    List<FirstSubMalayalam> findByMainUid(String mainId);
 }

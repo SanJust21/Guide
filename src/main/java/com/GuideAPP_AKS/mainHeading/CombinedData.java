@@ -1,14 +1,14 @@
 package com.GuideAPP_AKS.mainHeading;
 
-import com.GuideAPP_AKS.firstSubHeading.FirstSubEngData;
-import com.GuideAPP_AKS.firstSubHeading.english.FirstSubEnglish;
-import com.GuideAPP_AKS.firstSubHeading.malayalam.FirstSubMalayalam;
+import com.GuideAPP_AKS.SecondSubHeading.CombinedDataSubSub;
+import com.GuideAPP_AKS.firstSubHeading.CombinedDataSub;
 import com.GuideAPP_AKS.img.mainHeading.ImgData;
 import com.GuideAPP_AKS.mpFileData.mp3.mainHeading.Mp3Data;
 import com.GuideAPP_AKS.mpFileData.mp4.mainHeading.Mp4Data;
+import lombok.Data;
 
 import java.util.List;
-
+@Data
 public class CombinedData {
     private String title;
     private String description;
@@ -19,11 +19,8 @@ public class CombinedData {
     private List<Mp3Data> mp3DataList;
     private List<Mp4Data> mp4DataList;
 
-    private List<FirstSubEngData> firstSubEnglishList;
-
-   // private List<FirstSubMalData> firstSubMalayalamList;
-
-
+    private List<CombinedDataSub> combinedDataSubList;
+    private List<CombinedDataSubSub> combinedDataSubSubList;
 
     public CombinedData() {
     }
@@ -84,19 +81,5 @@ public class CombinedData {
         this.mp4DataList = mp4DataList;
     }
 
-    public List<FirstSubEngData> getFirstSubEnglishList() {
-        return firstSubEnglishList;
-    }
 
-    public void setFirstSubEnglishList(List<FirstSubEngData> firstSubEnglishList) {
-        this.firstSubEnglishList = firstSubEnglishList;
-    }
-
-    //    public List<FirstSubMalayalam> getFirstSubMalayalamList() {
-//        return firstSubMalayalamList;
-//    }
-//
-//    public void setFirstSubMalayalamList(List<FirstSubMalayalam> firstSubMalayalamList) {
-//        this.firstSubMalayalamList = firstSubMalayalamList;
-//    }
 }

@@ -1,5 +1,9 @@
 package com.GuideAPP_AKS.img;
 
+import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglish;
+import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglishRepo;
+import com.GuideAPP_AKS.SecondSubHeading.malayalam.SecondSubMalayalam;
+import com.GuideAPP_AKS.SecondSubHeading.malayalam.SecondSubMalayalamRepo;
 import com.GuideAPP_AKS.firstSubHeading.english.FirstSubEnglish;
 import com.GuideAPP_AKS.firstSubHeading.english.FirstSubEnglishRepo;
 import com.GuideAPP_AKS.firstSubHeading.malayalam.FirstSubMalayalam;
@@ -45,10 +49,19 @@ public class ImgService {
     private ImgSubFirst imgSubFirst;
 
     @Autowired
+    private ImgSubSecond imgSubSecond;
+
+    @Autowired
     private FirstSubEnglishRepo firstSubEnglishRepo;
 
     @Autowired
     private FirstSubMalayalamRepo firstSubMalayalamRepo;
+
+    @Autowired
+    private SecondSubEnglishRepo secondSubEnglishRepo;
+
+    @Autowired
+    private SecondSubMalayalamRepo secondSubMalayalamRepo;
 
     private File convertMultiPartFileToFile(MultipartFile file){
         File convertedFile = new File(file.getOriginalFilename());
@@ -87,14 +100,14 @@ public class ImgService {
         }else {
             log.info(" Eng id is null");
         }
-//        Optional<FirstSubMalayalam> firstSubMalayalamOptional =firstSubMalayalamRepo.findByfsUid(malUid);
-//        if (firstSubMalayalamOptional.isPresent()){
-//            FirstSubMalayalam firstSubMalayalam = firstSubMalayalamOptional.get();
-//            String uId = firstSubMalayalam.getMainUid();
-//            imgSubFirst.setMainMalUid(uId);
-//        }else {
-//            log.info("Mal id is null");
-//        }
+        Optional<FirstSubMalayalam> firstSubMalayalamOptional =firstSubMalayalamRepo.findByfsUid(malUid);
+        if (firstSubMalayalamOptional.isPresent()){
+            FirstSubMalayalam firstSubMalayalam = firstSubMalayalamOptional.get();
+            String uId = firstSubMalayalam.getMainUid();
+            imgSubFirst.setMainMalUid(uId);
+        }else {
+            log.info("Mal id is null");
+        }
 
 
         imgSubFirstRepo.save(imgSubFirst);
@@ -108,6 +121,25 @@ public class ImgService {
         fileObj.delete();
         String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
         ImgSubSecond imgSubSecond = new ImgSubSecond(fileName,fileUrl,englishUId,malUid);
+
+        Optional<SecondSubEnglish> secondSubEnglishOptional = secondSubEnglishRepo.findByssUid(englishUId);
+        if (secondSubEnglishOptional.isPresent()){
+            SecondSubEnglish secondSubEnglish = secondSubEnglishOptional.get();
+            String uId = secondSubEnglish.getFsUid();
+            imgSubSecond.setFsEngUid(uId);
+        }else {
+            log.info(" Eng id is null");
+        }
+        Optional<SecondSubMalayalam> secondSubMalayalamOptional = secondSubMalayalamRepo.findByssUid(malUid);
+        if (secondSubMalayalamOptional.isPresent()){
+            SecondSubMalayalam secondSubMalayalam = secondSubMalayalamOptional.get();
+            String uId = secondSubMalayalam.getFsUid();
+            imgSubSecond.setFsMalUid(uId);
+        }else {
+            log.info("Mal id is null");
+        }
+
+
         imgSubSecondRepo.save(imgSubSecond);
         return imgSubSecond;
     }

@@ -2,13 +2,17 @@ package com.GuideAPP_AKS.firstSubHeading;
 
 import com.GuideAPP_AKS.img.firstSubHeading.ImgSubFirst;
 import com.GuideAPP_AKS.img.mainHeading.ImgData;
+import com.GuideAPP_AKS.img.secondSubHeading.ImgSubSecond;
 import com.GuideAPP_AKS.mpFileData.mp3.firstSub.Mp3Data1;
 import com.GuideAPP_AKS.mpFileData.mp3.mainHeading.Mp3Data;
+import com.GuideAPP_AKS.mpFileData.mp3.secondSub.Mp3Data2;
 import com.GuideAPP_AKS.mpFileData.mp4.firstSub.Mp4Data1;
 import com.GuideAPP_AKS.mpFileData.mp4.mainHeading.Mp4Data;
+import com.GuideAPP_AKS.mpFileData.mp4.secondSub.Mp4Data2;
+import lombok.Data;
 
 import java.util.List;
-
+@Data
 public class CombinedDataSub {
     private String title;
     private String description;
@@ -16,13 +20,17 @@ public class CombinedDataSub {
     private String uId;
     private String mUid;
 
+
     private List<ImgSubFirst> imgDataList;
 
     private List<Mp3Data1> mp3DataList;
     private List<Mp4Data1> mp4DataList;
 
+    //private List<CombinedDataSub> combinedDataSubList;
+
     public CombinedDataSub() {
     }
+
 
     public String getTitle() {
         return title;

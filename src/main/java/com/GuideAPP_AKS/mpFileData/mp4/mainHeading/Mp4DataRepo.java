@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface Mp4DataRepo extends JpaRepository<Mp4Data,Integer> {
     List<Mp4Data> findBydtId(String s);
-}
+
+ }

@@ -1,7 +1,12 @@
 package com.GuideAPP_AKS.mainHeading;
 
+import com.GuideAPP_AKS.SecondSubHeading.CombinedDataSubSub;
+import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglish;
+import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglishRepo;
+import com.GuideAPP_AKS.SecondSubHeading.malayalam.SecondSubMalayalam;
+import com.GuideAPP_AKS.SecondSubHeading.malayalam.SecondSubMalayalamRepo;
+import com.GuideAPP_AKS.firstSubHeading.CombinedDataSub;
 import com.GuideAPP_AKS.firstSubHeading.english.FirstSubEnglish;
-import com.GuideAPP_AKS.firstSubHeading.FirstSubEngData;
 import com.GuideAPP_AKS.firstSubHeading.english.FirstSubEnglishRepo;
 import com.GuideAPP_AKS.firstSubHeading.malayalam.FirstSubMalayalam;
 import com.GuideAPP_AKS.firstSubHeading.malayalam.FirstSubMalayalamRepo;
@@ -9,14 +14,24 @@ import com.GuideAPP_AKS.img.firstSubHeading.ImgSubFirst;
 import com.GuideAPP_AKS.img.firstSubHeading.ImgSubFirstRepo;
 import com.GuideAPP_AKS.img.mainHeading.ImgData;
 import com.GuideAPP_AKS.img.mainHeading.ImgRepo;
+import com.GuideAPP_AKS.img.secondSubHeading.ImgSubSecond;
+import com.GuideAPP_AKS.img.secondSubHeading.ImgSubSecondRepo;
 import com.GuideAPP_AKS.mainHeading.mainEng.MainTitleEng;
 import com.GuideAPP_AKS.mainHeading.mainEng.MainTitleEngRepo;
 import com.GuideAPP_AKS.mainHeading.mainMal.MainTitleMal;
 import com.GuideAPP_AKS.mainHeading.mainMal.MainTitleMalRepo;
+import com.GuideAPP_AKS.mpFileData.mp3.firstSub.Mp3Data1;
+import com.GuideAPP_AKS.mpFileData.mp3.firstSub.Mp3Data1Repo;
 import com.GuideAPP_AKS.mpFileData.mp3.mainHeading.Mp3Data;
 import com.GuideAPP_AKS.mpFileData.mp3.mainHeading.Mp3Repo;
+import com.GuideAPP_AKS.mpFileData.mp3.secondSub.Mp3Data2;
+import com.GuideAPP_AKS.mpFileData.mp3.secondSub.Mp3Data2Repo;
+import com.GuideAPP_AKS.mpFileData.mp4.firstSub.Mp4Data1;
+import com.GuideAPP_AKS.mpFileData.mp4.firstSub.Mp4Data1Repo;
 import com.GuideAPP_AKS.mpFileData.mp4.mainHeading.Mp4Data;
 import com.GuideAPP_AKS.mpFileData.mp4.mainHeading.Mp4DataRepo;
+import com.GuideAPP_AKS.mpFileData.mp4.secondSub.Mp4Data2;
+import com.GuideAPP_AKS.mpFileData.mp4.secondSub.Mp4Data2Repo;
 import com.GuideAPP_AKS.util.AlphaNumeric;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +41,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MainTitleService {
@@ -51,6 +67,28 @@ public class MainTitleService {
 
     @Autowired
     private ImgSubFirstRepo imgSubFirstRepo;
+
+    @Autowired
+    private Mp3Data1Repo mp3Data1Repo;
+
+    @Autowired
+    private Mp4Data1Repo mp4Data1Repo;
+
+    @Autowired
+    private SecondSubEnglishRepo secondSubEnglishRepo;
+
+    @Autowired
+    private SecondSubMalayalamRepo secondSubMalayalamRepo;
+
+
+    @Autowired
+    private ImgSubSecondRepo imgSubSecondRepo;
+
+    @Autowired
+    private Mp3Data2Repo mp3Data2Repo;
+
+    @Autowired
+    private Mp4Data2Repo mp4Data2Repo;
 
 
     public ResponseEntity<?> addMainTitleEng(MainDTO mainDTO) {
@@ -157,19 +195,35 @@ public class MainTitleService {
                 combinedData1.setuId(mainTitleEng.getMEngUid());
 
                 List<FirstSubEnglish> firstSubEnglishList = firstSubEnglishRepo.findByMainUid(mainId);
-                List<FirstSubEngData> firstSubDataList = new ArrayList<>();
+
+                List<CombinedDataSub> combinedDataSubList = new ArrayList<>();
                 firstSubEnglishList.forEach(firstSubEnglish -> {
-                    FirstSubEngData firstSubData = new FirstSubEngData();
-                    firstSubData.setFirstSubEnglish(firstSubEnglish);
+                    CombinedDataSub combinedDataSub = new CombinedDataSub();
+
+                    // Set first subheading details
+                    combinedDataSub.setTitle(firstSubEnglish.getTitle());
+                    combinedDataSub.setDescription(firstSubEnglish.getDescription());
+                    combinedDataSub.setReferenceUrl(firstSubEnglish.getRef());
+                    combinedDataSub.setuId(firstSubEnglish.getFsUid());
+                    combinedDataSub.setmUid(mainId);
 
                     // Fetching images for the current first subheading
                     List<ImgSubFirst> imgSubFirstList = imgSubFirstRepo.findByEngId(firstSubEnglish.getFsUid());
-                    firstSubData.setImgSubFirstList(imgSubFirstList);
+                    combinedDataSub.setImgDataList(imgSubFirstList);
 
-                    firstSubDataList.add(firstSubData);
+                    // Fetching audio for the current first subheading
+                    List<Mp3Data1> mp3Data1List = mp3Data1Repo.findBydtId(firstSubEnglish.getFsUid());
+                    combinedDataSub.setMp3DataList(mp3Data1List);
+
+                    // Fetching video for the current first subheading
+                    List<Mp4Data1> mp4Data1List = mp4Data1Repo.findBydtId(firstSubEnglish.getFsUid());
+                    combinedDataSub.setMp4DataList(mp4Data1List);
+
+                    combinedDataSubList.add(combinedDataSub);
                 });
 
-                combinedData1.setFirstSubEnglishList(firstSubDataList);
+                combinedData1.setCombinedDataSubList(combinedDataSubList);
+
 
                 List<ImgData> imgData =imgRepo.findByengId(mainTitleEng.getMEngUid());
                 combinedData1.setImgDataList(imgData);
@@ -179,6 +233,32 @@ public class MainTitleService {
 
                 List<Mp4Data> mp4Data = mp4DataRepo.findBydtId(mainTitleEng.getMEngUid());
                 combinedData1.setMp4DataList(mp4Data);
+
+                // Fetching data for SecondSubEnglish
+                List<SecondSubEnglish> secondSubEnglishList = secondSubEnglishRepo.findByFsUidIn(firstSubEnglishList.stream().map(FirstSubEnglish::getFsUid).collect(Collectors.toList()));
+                List<CombinedDataSubSub> combinedDataSubSubList = new ArrayList<>();
+                secondSubEnglishList.forEach(secondSubEnglish -> {
+                    CombinedDataSubSub combinedDataSubSub = new CombinedDataSubSub();
+                    // Set details of SecondSubEnglish
+                    combinedDataSubSub.setTitle(secondSubEnglish.getTitle());
+                    combinedDataSubSub.setDescription(secondSubEnglish.getDescription());
+                    combinedDataSubSub.setReferenceUrl(secondSubEnglish.getRef());
+                    combinedDataSubSub.setuId(secondSubEnglish.getSsUid());
+                    combinedDataSubSub.setmUid(secondSubEnglish.getFsUid());
+                    // Fetching images for SecondSubEnglish
+                    List<ImgSubSecond> imgSubSecondList = imgSubSecondRepo.findByengId(secondSubEnglish.getSsUid());
+                    combinedDataSubSub.setImgData2List(imgSubSecondList);
+                    // Fetching audio for SecondSubEnglish
+                    List<Mp3Data2> mp3Data2List = mp3Data2Repo.findBydtId(secondSubEnglish.getSsUid());
+                    combinedDataSubSub.setMp3Data2List(mp3Data2List);
+                    // Fetching video for SecondSubEnglish
+                    List<Mp4Data2> mp4Data2List = mp4Data2Repo.findBydtId(secondSubEnglish.getSsUid());
+                    combinedDataSubSub.setMp4Data2List(mp4Data2List);
+                    combinedDataSubSubList.add(combinedDataSubSub);
+                });
+
+
+                combinedData1.setCombinedDataSubSubList(combinedDataSubSubList);
 
                 combinedDataList.add(combinedData1);
             });
@@ -200,6 +280,36 @@ public class MainTitleService {
                 combinedData.setReferenceUrl(mainTitleMal.getRef());
                 combinedData.setuId(mainTitleMal.getMMalUid());
 
+                List<FirstSubMalayalam> firstSubMalayalamList = firstSubMalayalamRepo.findByMainUid(mainId);
+
+                List<CombinedDataSub> combinedDataSubList = new ArrayList<>();
+                firstSubMalayalamList.forEach(firstSubMalayalam -> {
+                    CombinedDataSub combinedDataSub = new CombinedDataSub();
+
+                    // Set first subheading details
+                    combinedDataSub.setTitle(firstSubMalayalam.getTitle());
+                    combinedDataSub.setDescription(firstSubMalayalam.getDescription());
+                    combinedDataSub.setReferenceUrl(firstSubMalayalam.getRef());
+                    combinedDataSub.setuId(firstSubMalayalam.getFsUid());
+                    combinedDataSub.setmUid(mainId);
+
+                    // Fetching images for the current first subheading
+                    List<ImgSubFirst> imgSubFirstList = imgSubFirstRepo.findBymalId(firstSubMalayalam.getFsUid());
+                    combinedDataSub.setImgDataList(imgSubFirstList);
+
+                    // Fetching audio for the current first subheading
+                    List<Mp3Data1> mp3Data1List = mp3Data1Repo.findBydtId(firstSubMalayalam.getFsUid());
+                    combinedDataSub.setMp3DataList(mp3Data1List);
+
+                    // Fetching video for the current first subheading
+                    List<Mp4Data1> mp4Data1List = mp4Data1Repo.findBydtId(firstSubMalayalam.getFsUid());
+                    combinedDataSub.setMp4DataList(mp4Data1List);
+
+                    combinedDataSubList.add(combinedDataSub);
+                });
+
+                combinedData.setCombinedDataSubList(combinedDataSubList);
+
                 List<ImgData> imgData =imgRepo.findBymalId(mainTitleMal.getMMalUid());
                 combinedData.setImgDataList(imgData);
 
@@ -208,6 +318,33 @@ public class MainTitleService {
 
                 List<Mp4Data> mp4Data = mp4DataRepo.findBydtId(mainTitleMal.getMMalUid());
                 combinedData.setMp4DataList(mp4Data);
+
+
+                // Fetching data for SecondSubMalayalam
+                List<SecondSubMalayalam> secondSubMalayalamList = secondSubMalayalamRepo.findByFsUidIn(firstSubMalayalamList.stream().map(FirstSubMalayalam::getFsUid).collect(Collectors.toList()));
+                List<CombinedDataSubSub> combinedDataSubSubList = new ArrayList<>();
+                secondSubMalayalamList.forEach(secondSubMalayalam -> {
+                    CombinedDataSubSub combinedDataSubSub = new CombinedDataSubSub();
+                    // Set details of SecondSubMalayalam
+                    combinedDataSubSub.setTitle(secondSubMalayalam.getTitle());
+                    combinedDataSubSub.setDescription(secondSubMalayalam.getDescription());
+                    combinedDataSubSub.setReferenceUrl(secondSubMalayalam.getRef());
+                    combinedDataSubSub.setuId(secondSubMalayalam.getSsUid());
+                    combinedDataSubSub.setmUid(secondSubMalayalam.getFsUid());
+                    // Fetching images for SecondSubMalayalam
+                    List<ImgSubSecond> imgSubSecondList = imgSubSecondRepo.findBymalId(secondSubMalayalam.getSsUid());
+                    combinedDataSubSub.setImgData2List(imgSubSecondList);
+                    // Fetching audio for SecondSubMalayalam
+                    List<Mp3Data2> mp3Data2List = mp3Data2Repo.findBydtId(secondSubMalayalam.getSsUid());
+                    combinedDataSubSub.setMp3Data2List(mp3Data2List);
+                    // Fetching video for SecondSubMalayalam
+                    List<Mp4Data2> mp4Data2List = mp4Data2Repo.findBydtId(secondSubMalayalam.getSsUid());
+                    combinedDataSubSub.setMp4Data2List(mp4Data2List);
+                    combinedDataSubSubList.add(combinedDataSubSub);
+                });
+
+
+                combinedData.setCombinedDataSubSubList(combinedDataSubSubList);
 
                 combinedDataList.add(combinedData);
 

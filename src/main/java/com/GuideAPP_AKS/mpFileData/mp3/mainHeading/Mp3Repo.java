@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface Mp3Repo extends JpaRepository<Mp3Data,Integer> {
     List<Mp3Data> findBydtId(String s);
-}
+
+ }
