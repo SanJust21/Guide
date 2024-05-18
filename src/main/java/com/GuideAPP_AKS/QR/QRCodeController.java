@@ -1,13 +1,16 @@
 package com.GuideAPP_AKS.QR;
 
+import com.GuideAPP_AKS.mainHeading.CombinedData;
 import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.GuideAPP_AKS.mainHeading.MainTitleService;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/qrcode")
@@ -19,6 +22,9 @@ public class QRCodeController {
 
     @Autowired
     private CommonIdQRCodeRepo commonIdQRCodeRepo;
+
+    @Autowired
+    private MainTitleService mainTitleService;
 
     @GetMapping("/generate")
     public ResponseEntity<byte[]> generateQRCode(@RequestParam String mMalUid, @RequestParam String mEngUid) {
@@ -43,6 +49,12 @@ public class QRCodeController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping(path = "/getScanDetails")
+    public ResponseEntity<List<CombinedData>> getAllMainTitleData(@RequestParam Integer dtId, @RequestParam String commonId) {
+        return mainTitleService.getCombinedDataByCommonId(dtId, commonId);
+    }
+
 }
 
 

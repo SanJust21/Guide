@@ -1,5 +1,9 @@
 package com.GuideAPP_AKS.mainHeading;
 
+import com.GuideAPP_AKS.Language.DataType;
+import com.GuideAPP_AKS.Language.DataTypeRepo;
+import com.GuideAPP_AKS.QR.CommonIdQRCode;
+import com.GuideAPP_AKS.QR.CommonIdQRCodeRepo;
 import com.GuideAPP_AKS.SecondSubHeading.CombinedDataSubSub;
 import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglish;
 import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglishRepo;
@@ -89,6 +93,12 @@ public class MainTitleService {
 
     @Autowired
     private Mp4Data2Repo mp4Data2Repo;
+
+    @Autowired
+    private CommonIdQRCodeRepo commonIdQRCodeRepo;
+
+    @Autowired
+    private DataTypeRepo dataTypeRepo;
 
 
     public ResponseEntity<?> addMainTitleEng(MainDTO mainDTO) {
@@ -355,4 +365,37 @@ public class MainTitleService {
         }
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    public ResponseEntity<List<CombinedData>> getCombinedDataByCommonId(Integer dtId, String commonId) {
+        try {
+            Optional<CommonIdQRCode> commonIdQRCodeOptional = commonIdQRCodeRepo.findByCommonId(commonId);
+            if (commonIdQRCodeOptional.isPresent()) {
+                CommonIdQRCode commonIdQRCode = commonIdQRCodeOptional.get();
+
+                Optional<DataType> dataTypeOptional = dataTypeRepo.findById(dtId);
+                if (dataTypeOptional.isPresent()) {
+                    DataType dataType = dataTypeOptional.get();
+                    String tData = dataType.getTalk();
+
+                    if ("English".equalsIgnoreCase(tData)) {
+                        return getCombinedList(commonIdQRCode.getEngId());
+                    } else if ("Malayalam".equalsIgnoreCase(tData)) {
+                        return getCombinedListMal(commonIdQRCode.getMalId());
+                    } else {
+                        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+                    }
+                } else {
+                    return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
 }

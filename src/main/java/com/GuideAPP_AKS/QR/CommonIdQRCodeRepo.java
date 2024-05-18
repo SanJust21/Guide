@@ -11,4 +11,6 @@ public interface CommonIdQRCodeRepo extends JpaRepository<CommonIdQRCode, Long> 
     boolean existsByMalIdAndEngId(String malId, String engId);
 
     Optional<CommonIdQRCode> findByMalIdAndEngId(String malId, String engId);
+
+    Optional<CommonIdQRCode> findByCommonId(String commonId);
 }
