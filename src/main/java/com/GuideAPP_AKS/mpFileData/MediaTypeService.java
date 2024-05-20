@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -187,5 +188,104 @@ public class MediaTypeService {
         Mp4Data2 mp4Data2 = new Mp4Data2(fileName,fileUrl,uId);
         mp4Data2Repo.save(mp4Data2);
         return new MediaTypeDTO(fileName,fileUrl,uId);
+    }
+
+    public MediaTypeDTO updateUploadMp3(MultipartFile file, String uId) {
+        try {
+            List<Mp3Data> mp3Data = mp3Repo.findBydtId(uId);
+            if (!mp3Data.isEmpty()){
+                File fileObj = convertMultiPartFileToFile(file);
+                String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
+                s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
+                fileObj.delete();
+                String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
+                Mp4Data mp4Data= new Mp4Data(fileName,fileUrl,uId);
+                mp4DataRepo.save(mp4Data);
+                return new MediaTypeDTO(fileName,fileUrl,uId);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new MediaTypeDTO("No Data","No Data","No Data");
+    }
+
+    public MediaTypeDTO updateUploadMp4(MultipartFile file, String uId) {
+        try {
+            File fileObj = convertMultiPartFileToFile(file);
+            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
+            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
+            fileObj.delete();
+            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
+            Mp4Data mp4Data= new Mp4Data(fileName,fileUrl,uId);
+            mp4DataRepo.save(mp4Data);
+            return new MediaTypeDTO(fileName,fileUrl,uId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new MediaTypeDTO("No Data","No Data","No Data");
+    }
+
+    public MediaTypeDTO updateFirstSubUploadMp3(MultipartFile file, String uId) {
+        try {
+            File fileObj = convertMultiPartFileToFile(file);
+            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
+            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
+            fileObj.delete();
+            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
+            Mp3Data1 mp3Data1= new Mp3Data1(fileName,fileUrl,uId);
+            mp3Data1Repo.save(mp3Data1);
+            return new MediaTypeDTO(fileName,fileUrl,uId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new MediaTypeDTO("No Data","No Data","No Data");
+    }
+
+    public MediaTypeDTO updateFirstSubUploadMp4(MultipartFile file, String uId) {
+        try {
+            File fileObj = convertMultiPartFileToFile(file);
+            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
+            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
+            fileObj.delete();
+            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
+            Mp4Data1 mp4Data1= new Mp4Data1(fileName,fileUrl,uId);
+            mp4Data1Repo.save(mp4Data1);
+            return new MediaTypeDTO(fileName,fileUrl,uId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new MediaTypeDTO("No Data","No Data","No Data");
+    }
+
+    public MediaTypeDTO updateSecondSubUploadMp3(MultipartFile file, String uId) {
+        try {
+            File fileObj = convertMultiPartFileToFile(file);
+            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
+            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
+            fileObj.delete();
+            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
+            Mp3Data2 mp3Data2= new Mp3Data2(fileName,fileUrl,uId);
+            mp3Data2Repo.save(mp3Data2);
+            return new MediaTypeDTO(fileName,fileUrl,uId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new MediaTypeDTO("No Data","No Data","No Data");
+    }
+
+    public MediaTypeDTO updateSecondSubUploadMp4(MultipartFile file, String uId) {
+        try {
+            File fileObj = convertMultiPartFileToFile(file);
+            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
+            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
+            fileObj.delete();
+            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
+            Mp4Data2 mp4Data2= new Mp4Data2(fileName,fileUrl,uId);
+            mp4Data2Repo.save(mp4Data2);
+            return new MediaTypeDTO(fileName,fileUrl,uId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new MediaTypeDTO("No Data","No Data","No Data");
     }
 }
