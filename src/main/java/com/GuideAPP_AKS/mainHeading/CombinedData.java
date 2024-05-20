@@ -15,6 +15,9 @@ public class CombinedData {
     private String referenceUrl;
     private String uId;
 
+    private String commonId;
+    private String qrCodeUrl;
+
     private List<ImgData> imgDataList;
     private List<Mp3Data> mp3DataList;
     private List<Mp4Data> mp4DataList;

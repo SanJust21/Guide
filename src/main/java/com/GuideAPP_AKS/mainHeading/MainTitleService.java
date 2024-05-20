@@ -145,6 +145,12 @@ public class MainTitleService {
                 combinedData1.setReferenceUrl(mainTitleEng.getRef());
                 combinedData1.setuId(mainTitleEng.getMEngUid());
 
+                Optional<CommonIdQRCode> commonIdQRCode = commonIdQRCodeRepo.findByEngId(mainTitleEng.getMEngUid());
+                if (commonIdQRCode.isPresent()) {
+                    combinedData1.setCommonId(commonIdQRCode.get().getCommonId());
+                    combinedData1.setQrCodeUrl(commonIdQRCode.get().getQrCodeUrl());
+                }
+
                 List<ImgData> imgData =imgRepo.findByengId(mainTitleEng.getMEngUid());
                 combinedData1.setImgDataList(imgData);
 
@@ -173,6 +179,12 @@ public class MainTitleService {
                 combinedData.setDescription(mainTitleMal.getDescription());
                 combinedData.setReferenceUrl(mainTitleMal.getRef());
                 combinedData.setuId(mainTitleMal.getMMalUid());
+
+                Optional<CommonIdQRCode> commonIdQRCode = commonIdQRCodeRepo.findByMalId(mainTitleMal.getMMalUid());
+                if (commonIdQRCode.isPresent()) {
+                    combinedData.setCommonId(commonIdQRCode.get().getCommonId());
+                    combinedData.setQrCodeUrl(commonIdQRCode.get().getQrCodeUrl());
+                }
 
                 List<ImgData> imgData =imgRepo.findBymalId(mainTitleMal.getMMalUid());
                 combinedData.setImgDataList(imgData);
@@ -203,6 +215,12 @@ public class MainTitleService {
                 combinedData1.setDescription(mainTitleEng.getDescription());
                 combinedData1.setReferenceUrl(mainTitleEng.getRef());
                 combinedData1.setuId(mainTitleEng.getMEngUid());
+
+                Optional<CommonIdQRCode> commonIdQRCode = commonIdQRCodeRepo.findByEngId(mainTitleEng.getMEngUid());
+                if (commonIdQRCode.isPresent()) {
+                    combinedData1.setCommonId(commonIdQRCode.get().getCommonId());
+                    combinedData1.setQrCodeUrl(commonIdQRCode.get().getQrCodeUrl());
+                }
 
                 List<FirstSubEnglish> firstSubEnglishList = firstSubEnglishRepo.findByMainUid(mainId);
 
@@ -289,6 +307,12 @@ public class MainTitleService {
                 combinedData.setDescription(mainTitleMal.getDescription());
                 combinedData.setReferenceUrl(mainTitleMal.getRef());
                 combinedData.setuId(mainTitleMal.getMMalUid());
+
+                Optional<CommonIdQRCode> commonIdQRCode = commonIdQRCodeRepo.findByMalId(mainTitleMal.getMMalUid());
+                if (commonIdQRCode.isPresent()) {
+                    combinedData.setCommonId(commonIdQRCode.get().getCommonId());
+                    combinedData.setQrCodeUrl(commonIdQRCode.get().getQrCodeUrl());
+                }
 
                 List<FirstSubMalayalam> firstSubMalayalamList = firstSubMalayalamRepo.findByMainUid(mainId);
 
