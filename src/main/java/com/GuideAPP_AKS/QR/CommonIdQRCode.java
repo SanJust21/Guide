@@ -21,9 +21,8 @@ public class CommonIdQRCode {
     @Column(name = "engId")
     private String engId;
 
-//    @Lob
-//    @Column(name = "qr_code")
-//    private byte[] qrCode;
+    @Column(name = "fName")
+    private String fName;
 
     @Column(name = "qr_code_url")
     private String qrCodeUrl;
