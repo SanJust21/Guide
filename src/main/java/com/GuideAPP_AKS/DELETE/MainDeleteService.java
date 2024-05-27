@@ -16,17 +16,26 @@ import com.GuideAPP_AKS.mainHeading.mainEng.MainTitleEng;
 import com.GuideAPP_AKS.mainHeading.mainEng.MainTitleEngRepo;
 import com.GuideAPP_AKS.mainHeading.mainMal.MainTitleMal;
 import com.GuideAPP_AKS.mainHeading.mainMal.MainTitleMalRepo;
+import com.GuideAPP_AKS.mpFileData.mp3.firstSub.Mp3Data1;
 import com.GuideAPP_AKS.mpFileData.mp3.firstSub.Mp3Data1Repo;
+import com.GuideAPP_AKS.mpFileData.mp3.mainHeading.Mp3Data;
 import com.GuideAPP_AKS.mpFileData.mp3.mainHeading.Mp3Repo;
+import com.GuideAPP_AKS.mpFileData.mp3.secondSub.Mp3Data2;
 import com.GuideAPP_AKS.mpFileData.mp3.secondSub.Mp3Data2Repo;
+import com.GuideAPP_AKS.mpFileData.mp4.firstSub.Mp4Data1;
 import com.GuideAPP_AKS.mpFileData.mp4.firstSub.Mp4Data1Repo;
+import com.GuideAPP_AKS.mpFileData.mp4.mainHeading.Mp4Data;
 import com.GuideAPP_AKS.mpFileData.mp4.mainHeading.Mp4DataRepo;
 import com.GuideAPP_AKS.firstSubHeading.english.FirstSubEnglish;
 import com.GuideAPP_AKS.firstSubHeading.malayalam.FirstSubMalayalam;
 import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglish;
 import com.GuideAPP_AKS.SecondSubHeading.malayalam.SecondSubMalayalam;
+import com.GuideAPP_AKS.mpFileData.mp4.secondSub.Mp4Data2;
 import com.GuideAPP_AKS.mpFileData.mp4.secondSub.Mp4Data2Repo;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,24 +130,33 @@ public class MainDeleteService {
         deleteImagesSecondByCommonId(commonId);
 
         // Delete MP3 entities related to mEngUid and mMalUid
-        mp3Repo.deleteByDtId(mEngUid);
-        mp3Repo.deleteByDtId(mMalUid);
+        //mp3Repo.deleteByDtId(mEngUid);
+        deleteMp3ByDtId(mEngUid);
+        //mp3Repo.deleteByDtId(mMalUid);
+        deleteMp3ByDtId(mMalUid);
 
         // Delete MP4 entities related to mEngUid and mMalUid
-        mp4DataRepo.deleteByDtId(mEngUid);
-        mp4DataRepo.deleteByDtId(mMalUid);
+        //mp4DataRepo.deleteByDtId(mEngUid);
+        deleteMp4ByDtId(mEngUid);
+        //mp4DataRepo.deleteByDtId(mMalUid);
+        deleteMp4ByDtId(mMalUid);
 
          // Delete first subheading entities related to mEngUid and mMalUid
         firstSubEnglishRepo.deleteByMainUid(mEngUid);
         firstSubMalayalamRepo.deleteByMainUid(mMalUid);
 
-        mp3Data1Repo.deleteByMainEngId(mEngUid);
-        mp3Data1Repo.deleteByMainMalId(mMalUid);
+        //mp3Data1Repo.deleteByMainEngId(mEngUid);
+        //mp3Data1Repo.deleteByMainMalId(mMalUid);
+
+        deleteMp3FirstByMainEngId(mEngUid);
+        deleteMp3FirstByMainMalId(mMalUid);
+
 
         // Delete MP4 entities related to mEngUid and mMalUid
-        mp4Data1Repo.deleteByMainEngId(mEngUid);
-        mp4Data1Repo.deleteByMainMalId(mMalUid);
-
+//        mp4Data1Repo.deleteByMainEngId(mEngUid);
+//        mp4Data1Repo.deleteByMainMalId(mMalUid);
+          deleteMp4FirstByMainEngId(mEngUid);
+          deleteMp4FirstByMainMalId(mMalUid);
 
 //        // Find all fsUids from FirstSubEnglish and FirstSubMalayalam entities
 //        List<String> fsUids = new ArrayList<>();
@@ -208,13 +226,17 @@ public class MainDeleteService {
 
         // Delete mp3Data2 and mp4Data2 entities related to each ssUid
         for (String ssUid : englishSsUids) {
-            mp3Data2Repo.deleteByDtId(ssUid);
-            mp4Data2Repo.deleteByDtId(ssUid);
+            //mp3Data2Repo.deleteByDtId(ssUid);
+            deleteMp3SecondByDtId(ssUid);
+            //mp4Data2Repo.deleteByDtId(ssUid);
+            deleteMp4SecondByDtId(ssUid);
         }
 
         for (String ssUid : malayalamSsUids) {
-            mp3Data2Repo.deleteByDtId(ssUid);
-            mp4Data2Repo.deleteByDtId(ssUid);
+            //mp3Data2Repo.deleteByDtId(ssUid);
+            deleteMp3SecondByDtId(ssUid);
+            //mp4Data2Repo.deleteByDtId(ssUid);
+            deleteMp4SecondByDtId(ssUid);
         }
 
         // Delete QR code from S3
@@ -296,5 +318,89 @@ public class MainDeleteService {
     private void deleteImageFromS3(String fileName) {
         s3Client.deleteObject(bucketName, fileName);
     }
+
+    public void deleteMp3ByDtId(String dtId) {
+        // Delete MP3 details from the database and S3 bucket
+        List<Mp3Data> existingMp3List = mp3Repo.findBydtId(dtId);
+        for (Mp3Data mp3 : existingMp3List) {
+            deleteFileFromS3(mp3.getFName());
+            mp3Repo.delete(mp3);
+        }
+    }
+
+    public void deleteMp4ByDtId(String dtId) {
+        // Delete MP4 details from the database and S3 bucket
+        List<Mp4Data> existingMp4List = mp4DataRepo.findBydtId(dtId);
+        for (Mp4Data mp4 : existingMp4List) {
+            deleteFileFromS3(mp4.getFName());
+            mp4DataRepo.delete(mp4);
+        }
+    }
+
+
+    public void deleteMp3FirstByMainEngId(String mainEngId) {
+        List<Mp3Data1> existingMp3List = mp3Data1Repo.findByMainEngId(mainEngId);
+        for (Mp3Data1 mp3 : existingMp3List) {
+            deleteFileFromS3(mp3.getFName());
+            mp3Data1Repo.delete(mp3);
+        }
+    }
+
+    public void deleteMp3FirstByMainMalId(String mainMalId) {
+        List<Mp3Data1> existingMp3List = mp3Data1Repo.findByMainMalId(mainMalId);
+        for (Mp3Data1 mp3 : existingMp3List) {
+            deleteFileFromS3(mp3.getFName());
+            mp3Data1Repo.delete(mp3);
+        }
+    }
+
+    public void deleteMp4FirstByMainEngId(String mainEngId) {
+        // Find and delete MP4 details from the database and S3 bucket
+        List<Mp4Data1> existingMp4List = mp4Data1Repo.findByMainEngId(mainEngId);
+        for (Mp4Data1 mp4 : existingMp4List) {
+            deleteFileFromS3(mp4.getFName());
+            mp4Data1Repo.delete(mp4);
+        }
+    }
+
+    public void deleteMp4FirstByMainMalId(String mainMalId) {
+        // Find and delete MP4 details from the database and S3 bucket
+        List<Mp4Data1> existingMp4List = mp4Data1Repo.findByMainEngId(mainMalId);
+        for (Mp4Data1 mp4 : existingMp4List) {
+            deleteFileFromS3(mp4.getFName());
+            mp4Data1Repo.delete(mp4);
+        }
+    }
+
+    public void deleteMp3SecondByDtId(String dtId) {
+        // Delete MP3 details from the database and S3 bucket
+        List<Mp3Data2> existingMp3List = mp3Data2Repo.findBydtId(dtId);
+        for (Mp3Data2 mp3 : existingMp3List) {
+            deleteFileFromS3(mp3.getFName());
+            mp3Data2Repo.delete(mp3);
+        }
+    }
+
+    public void deleteMp4SecondByDtId(String dtId) {
+        // Delete MP4 details from the database and S3 bucket
+        List<Mp4Data2> existingMp4List = mp4Data2Repo.findBydtId(dtId);
+        for (Mp4Data2 mp4 : existingMp4List) {
+            deleteFileFromS3(mp4.getFName());
+            mp4Data2Repo.delete(mp4);
+        }
+    }
+
+    public void deleteFileFromS3(String fileName) {
+        try {
+            s3Client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
+        } catch (AmazonServiceException e) {
+            // Handle Amazon Service Exception
+            e.printStackTrace();
+        } catch (SdkClientException e) {
+            // Handle SDK Client Exception
+            e.printStackTrace();
+        }
+    }
+
 
 }
