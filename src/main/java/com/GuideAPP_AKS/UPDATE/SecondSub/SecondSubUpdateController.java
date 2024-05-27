@@ -27,6 +27,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/updateSecondSub")
+@CrossOrigin
 public class SecondSubUpdateController {
     @Autowired
     private SecondSubUpdateService secondSubUpdateService;
@@ -76,31 +77,59 @@ public class SecondSubUpdateController {
         return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @PutMapping(path = "/updateUploadImg2/{englishUId}")
-    public ResponseEntity<?> updateJpgSecond(@RequestParam(value = "file") MultipartFile[] files,
-                                           @PathVariable String englishUId,
-                                           @RequestParam String malUid){
+//    @PutMapping(path = "/updateUploadImg2/{englishUId}")
+//    public ResponseEntity<?> updateJpgSecond(@RequestParam(value = "file") MultipartFile[] files,
+//                                           @PathVariable String englishUId,
+//                                           @RequestParam String malUid){
+//
+//        try {
+//            if (englishUId == null || malUid == null) {
+//                return new ResponseEntity<>("English UID and Malayalam UID are required", HttpStatus.BAD_REQUEST);
+//            }else {
+//                List<ImgSubSecond> existingImgData = imgSubSecondRepo.findByengId(englishUId);
+//                if (!existingImgData.isEmpty()){
+//                    List<ImgSubSecond> responses = new ArrayList<>();
+//                    for (MultipartFile file : files){
+//                        responses.add(imgService.updateSecondSubJPG(file,englishUId,malUid));
+//                    }
+//                    return new ResponseEntity<>(responses,HttpStatus.OK);
+//                }else {
+//                    return new ResponseEntity<>("imgRepo is empty",HttpStatus.BAD_REQUEST);
+//                }
+//            }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
+    @PutMapping(path = "/updateUploadImg2")
+    public ResponseEntity<?> updateJpgSecond(
+            @RequestParam(value = "files") MultipartFile[] files,
+            @RequestParam List<Integer> imgIds,
+            @RequestParam String commonId) {
 
         try {
-            if (englishUId == null || malUid == null) {
-                return new ResponseEntity<>("English UID and Malayalam UID are required", HttpStatus.BAD_REQUEST);
-            }else {
-                List<ImgSubSecond> existingImgData = imgSubSecondRepo.findByengId(englishUId);
-                if (!existingImgData.isEmpty()){
+            if (commonId == null || imgIds.isEmpty() || files.length != imgIds.size()) {
+                return new ResponseEntity<>("Common ID, image IDs, and files are required, and the number of files must match the number of image IDs", HttpStatus.BAD_REQUEST);
+            } else {
+                List<ImgSubSecond> existingImgDataList = imgSubSecondRepo.findByCommonId(commonId);
+                if (!existingImgDataList.isEmpty()) {
                     List<ImgSubSecond> responses = new ArrayList<>();
-                    for (MultipartFile file : files){
-                        responses.add(imgService.updateSecondSubJPG(file,englishUId,malUid));
+                    for (int i = 0; i < files.length; i++) {
+                        responses.add(imgService.updateSecondSubJPG(files[i], imgIds.get(i), commonId));
                     }
-                    return new ResponseEntity<>(responses,HttpStatus.OK);
-                }else {
-                    return new ResponseEntity<>("imgRepo is empty",HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(responses, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("No image data found for the provided Common ID", HttpStatus.BAD_REQUEST);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @PutMapping(path = "/updateMpData2/{uId}")
     public ResponseEntity<?> addMp3DataSecond(@PathVariable String uId,

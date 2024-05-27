@@ -29,6 +29,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/updateFirst")
+@CrossOrigin
 public class FirstSubUpdateController {
     @Autowired
     private FirstSubUpdateService firstSubUpdateService;
@@ -82,69 +83,70 @@ public class FirstSubUpdateController {
         return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @PutMapping(path = "/updateUploadImg1/{englishUId}")
-    public ResponseEntity<?> updateJpgMain(@RequestParam(value = "file") MultipartFile[] files,
-                                           @PathVariable String englishUId,
-                                           @RequestParam String malUid){
+
+    @PutMapping(path = "/updateUploadImgSubFirst")
+    public ResponseEntity<?> updateJpgSubFirst(
+            @RequestParam(value = "files") MultipartFile[] files,
+            @RequestParam List<Integer> imgIds,
+            @RequestParam String commonId) {
 
         try {
-            if (englishUId == null || malUid == null) {
-                return new ResponseEntity<>("English UID and Malayalam UID are required", HttpStatus.BAD_REQUEST);
-            }else {
-                List<ImgSubFirst> existingImgData = imgSubFirstRepo.findByengId(englishUId);
-                if (!existingImgData.isEmpty()){
+            if (commonId == null || imgIds.isEmpty() || files.length != imgIds.size()) {
+                return new ResponseEntity<>("Common ID, image IDs, and files are required, and the number of files must match the number of image IDs", HttpStatus.BAD_REQUEST);
+            } else {
+                List<ImgSubFirst> existingImgDataList = imgSubFirstRepo.findByCommonId(commonId);
+                if (!existingImgDataList.isEmpty()) {
                     List<ImgSubFirst> responses = new ArrayList<>();
-                    for (MultipartFile file : files){
-                        responses.add(imgService.updateFirstSubJPG(file,englishUId,malUid));
+                    for (int i = 0; i < files.length; i++) {
+                        responses.add(imgService.updateFirstSubJPG(files[i], imgIds.get(i), commonId));
                     }
-                    return new ResponseEntity<>(responses,HttpStatus.OK);
-                }else {
-                    return new ResponseEntity<>("imgRepo is empty",HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(responses, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("No image data found for the provided Common ID", HttpStatus.BAD_REQUEST);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping(path = "/updateMpData1/{uId}")
     public ResponseEntity<?> addMp3Data(@PathVariable String uId,
                                         @RequestParam Integer mtId,
-                                        @RequestParam MultipartFile[] files){
+                                        @RequestParam MultipartFile[] files) {
         try {
-
-            if (uId == null || mtId == null ) {
+            if (uId == null || mtId == null) {
                 return new ResponseEntity<>("Topic ID, Media Type ID required", HttpStatus.BAD_REQUEST);
             }
 
-            Optional<FileType> fileTypeOptional =fileTypeRepo .findById(mtId);
+            Optional<FileType> fileTypeOptional = fileTypeRepo.findById(mtId);
             if (fileTypeOptional.isPresent()) {
                 FileType fileType = fileTypeOptional.get();
                 String fData = fileType.getFileType();
                 if (fData != null && "Audio".equalsIgnoreCase(fData)) {
                     List<MediaTypeDTO> responses = new ArrayList<>();
-                    for (MultipartFile file : files){
-                        responses.add(mediaTypeService.updateFirstSubUploadMp3(file,uId));
+                    for (MultipartFile file : files) {
+                        responses.add(mediaTypeService.updateFirstSubUploadMp3(file, uId));
                     }
-                    return new ResponseEntity<>(responses,HttpStatus.OK);
-                    //return mediaTypeService.addMp3(files,dtId);
+                    return new ResponseEntity<>(responses, HttpStatus.OK);
                 } else if (fData != null && "Video".equalsIgnoreCase(fData)) {
                     List<MediaTypeDTO> responses = new ArrayList<>();
-                    for (MultipartFile file : files){
-                        responses.add(mediaTypeService.updateFirstSubUploadMp4(file,uId));
+                    for (MultipartFile file : files) {
+                        responses.add(mediaTypeService.updateFirstSubUploadMp4(file, uId));
                     }
-                    return new ResponseEntity<>(responses,HttpStatus.OK);
+                    return new ResponseEntity<>(responses, HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("File not present. Resend the file.", HttpStatus.BAD_REQUEST);
                 }
             } else {
                 return new ResponseEntity<>("File not present. Resend the file.", HttpStatus.BAD_REQUEST);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
+            return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 
 }

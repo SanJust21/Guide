@@ -1,5 +1,6 @@
 package com.GuideAPP_AKS.firstSubHeading;
 
+import com.GuideAPP_AKS.SecondSubHeading.CombinedDataSubSub;
 import com.GuideAPP_AKS.img.firstSubHeading.ImgSubFirst;
 import com.GuideAPP_AKS.img.mainHeading.ImgData;
 import com.GuideAPP_AKS.img.secondSubHeading.ImgSubSecond;
@@ -22,11 +23,10 @@ public class CombinedDataSub {
 
 
     private List<ImgSubFirst> imgDataList;
-
     private List<Mp3Data1> mp3DataList;
     private List<Mp4Data1> mp4DataList;
 
-    //private List<CombinedDataSub> combinedDataSubList;
+    private List<CombinedDataSubSub> combinedDataSubSubList;
 
     public CombinedDataSub() {
     }
@@ -94,5 +94,13 @@ public class CombinedDataSub {
 
     public void setMp4DataList(List<Mp4Data1> mp4DataList) {
         this.mp4DataList = mp4DataList;
+    }
+
+    public List<CombinedDataSubSub> getCombinedDataSubSubList() {
+        return combinedDataSubSubList;
+    }
+
+    public void setCombinedDataSubSubList(List<CombinedDataSubSub> combinedDataSubSubList) {
+        this.combinedDataSubSubList = combinedDataSubSubList;
     }
 }

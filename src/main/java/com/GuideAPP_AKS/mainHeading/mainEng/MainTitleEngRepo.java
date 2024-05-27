@@ -8,4 +8,5 @@ public interface MainTitleEngRepo extends JpaRepository<MainTitleEng,Integer> {
     MainTitleEng findBymEngUid(String engUId);
 
 
+    void deleteBymEngUid(String mEngUid);
 }

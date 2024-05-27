@@ -17,13 +17,15 @@ public class CombinedData {
 
     private String commonId;
     private String qrCodeUrl;
+    private String malId;
+    private String engId;
 
     private List<ImgData> imgDataList;
     private List<Mp3Data> mp3DataList;
     private List<Mp4Data> mp4DataList;
 
     private List<CombinedDataSub> combinedDataSubList;
-    private List<CombinedDataSubSub> combinedDataSubSubList;
+    //private List<CombinedDataSubSub> combinedDataSubSubList;
 
     public CombinedData() {
     }
@@ -84,5 +86,43 @@ public class CombinedData {
         this.mp4DataList = mp4DataList;
     }
 
+    public String getCommonId() {
+        return commonId;
+    }
 
+    public void setCommonId(String commonId) {
+        this.commonId = commonId;
+    }
+
+    public String getQrCodeUrl() {
+        return qrCodeUrl;
+    }
+
+    public void setQrCodeUrl(String qrCodeUrl) {
+        this.qrCodeUrl = qrCodeUrl;
+    }
+
+    public String getMalId() {
+        return malId;
+    }
+
+    public void setMalId(String malId) {
+        this.malId = malId;
+    }
+
+    public String getEngId() {
+        return engId;
+    }
+
+    public void setEngId(String engId) {
+        this.engId = engId;
+    }
+
+    public List<CombinedDataSub> getCombinedDataSubList() {
+        return combinedDataSubList;
+    }
+
+    public void setCombinedDataSubList(List<CombinedDataSub> combinedDataSubList) {
+        this.combinedDataSubList = combinedDataSubList;
+    }
 }

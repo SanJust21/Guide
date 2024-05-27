@@ -26,6 +26,9 @@ public class ImgData {
     @Column(name = "malId")
     private String malId;
 
+    @Column(name = "commonId")
+    private String commonId;
+
     public ImgData() {
     }
 
@@ -34,11 +37,12 @@ public class ImgData {
         this.fUrl = fUrl;
     }
 
-    public ImgData(String fName, String fUrl, String engId, String malId) {
+    public ImgData(String fName, String fUrl, String engId, String malId, String commonId) {
         this.fName = fName;
         this.fUrl = fUrl;
         this.engId = engId;
         this.malId=malId;
+        this.commonId = commonId;
     }
     @PrePersist
     @PreUpdate
@@ -51,6 +55,8 @@ public class ImgData {
             engId="No Data";
         }if (malId==null){
             malId="No Data";
+        }if(commonId==null){
+            commonId="No Data";
         }
     }
 }

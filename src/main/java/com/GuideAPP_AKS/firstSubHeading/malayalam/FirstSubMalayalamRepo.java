@@ -13,4 +13,8 @@ public interface FirstSubMalayalamRepo extends JpaRepository<FirstSubMalayalam,I
     Optional<FirstSubMalayalam> findByfsUid(String malUid);
 
     List<FirstSubMalayalam> findByMainUid(String mainId);
+
+    void deleteByMainUid(String mMalUid);
+
+    List<FirstSubMalayalam> findAllByMainUid(String mMalUid);
 }

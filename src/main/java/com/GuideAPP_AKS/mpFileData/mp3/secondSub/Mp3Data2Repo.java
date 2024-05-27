@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface Mp3Data2Repo extends JpaRepository<Mp3Data2,Integer> {
     List<Mp3Data2> findBydtId(String ssUid);
+
+    void deleteByDtId(String ssUid);
 }

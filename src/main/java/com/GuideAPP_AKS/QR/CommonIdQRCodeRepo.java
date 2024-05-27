@@ -17,4 +17,6 @@ public interface CommonIdQRCodeRepo extends JpaRepository<CommonIdQRCode, Long> 
     Optional<CommonIdQRCode> findByEngId(String mEngUid);
 
     Optional<CommonIdQRCode> findByMalId(String mMalUid);
+
+    void deleteByCommonId(String commonId);
 }

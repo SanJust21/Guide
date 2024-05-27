@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface MainTitleMalRepo extends JpaRepository<MainTitleMal,Integer> {
     Optional<MainTitleMal> findBymMalUid(String uId);
+
+    void deleteBymMalUid(String mMalUid);
 }

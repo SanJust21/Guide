@@ -192,15 +192,20 @@ public class MediaTypeService {
 
     public MediaTypeDTO updateUploadMp3(MultipartFile file, String uId) {
         try {
-            List<Mp3Data> mp3Data = mp3Repo.findBydtId(uId);
-            if (!mp3Data.isEmpty()){
+            List<Mp3Data> mp3Data1 = mp3Repo.findBydtId(uId);
+            if (!mp3Data1.isEmpty()){
                 File fileObj = convertMultiPartFileToFile(file);
                 String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
                 s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
                 fileObj.delete();
                 String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
-                Mp4Data mp4Data= new Mp4Data(fileName,fileUrl,uId);
-                mp4DataRepo.save(mp4Data);
+
+                for (Mp3Data mp3Data : mp3Data1) {
+                    mp3Data.setFName(fileName);
+                    mp3Data.setFUrl(fileUrl);
+                    mp3Repo.save(mp3Data);
+                }
+
                 return new MediaTypeDTO(fileName,fileUrl,uId);
             }
         }catch (Exception e){
@@ -211,81 +216,158 @@ public class MediaTypeService {
 
     public MediaTypeDTO updateUploadMp4(MultipartFile file, String uId) {
         try {
-            File fileObj = convertMultiPartFileToFile(file);
-            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
-            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
-            fileObj.delete();
-            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
-            Mp4Data mp4Data= new Mp4Data(fileName,fileUrl,uId);
-            mp4DataRepo.save(mp4Data);
-            return new MediaTypeDTO(fileName,fileUrl,uId);
-        }catch (Exception e){
+            List<Mp4Data> mp4DataList = mp4DataRepo.findBydtId(uId);
+            if (!mp4DataList.isEmpty() && !file.isEmpty()) {
+                File fileObj = convertMultiPartFileToFile(file);
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+                fileObj.delete();
+                String fileUrl = s3Client.getUrl(bucketName, fileName).toString();
+
+                // Update existing Mp4Data entries
+                for (Mp4Data mp4Data : mp4DataList) {
+                    mp4Data.setFName(fileName);
+                    mp4Data.setFUrl(fileUrl);
+                    mp4DataRepo.save(mp4Data);
+                }
+                return new MediaTypeDTO(fileName, fileUrl, uId);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return new MediaTypeDTO("No Data","No Data","No Data");
+        return new MediaTypeDTO("No Data", "No Data", "No Data");
     }
+
 
     public MediaTypeDTO updateFirstSubUploadMp3(MultipartFile file, String uId) {
         try {
-            File fileObj = convertMultiPartFileToFile(file);
-            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
-            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
-            fileObj.delete();
-            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
-            Mp3Data1 mp3Data1= new Mp3Data1(fileName,fileUrl,uId);
-            mp3Data1Repo.save(mp3Data1);
-            return new MediaTypeDTO(fileName,fileUrl,uId);
-        }catch (Exception e){
+            List<Mp3Data1> mp3DataList = mp3Data1Repo.findBydtId(uId);
+            if (!mp3DataList.isEmpty() && !file.isEmpty()) {
+                File fileObj = convertMultiPartFileToFile(file);
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+                fileObj.delete();
+                String fileUrl = s3Client.getUrl(bucketName, fileName).toString();
+
+                // Update existing Mp3Data1 entries
+                for (Mp3Data1 mp3Data : mp3DataList) {
+                    mp3Data.setFName(fileName);
+                    mp3Data.setFUrl(fileUrl);
+                    mp3Data1Repo.save(mp3Data);
+                }
+                return new MediaTypeDTO(fileName, fileUrl, uId);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return new MediaTypeDTO("No Data","No Data","No Data");
+        return new MediaTypeDTO("No Data", "No Data", "No Data");
     }
+
 
     public MediaTypeDTO updateFirstSubUploadMp4(MultipartFile file, String uId) {
         try {
-            File fileObj = convertMultiPartFileToFile(file);
-            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
-            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
-            fileObj.delete();
-            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
-            Mp4Data1 mp4Data1= new Mp4Data1(fileName,fileUrl,uId);
-            mp4Data1Repo.save(mp4Data1);
-            return new MediaTypeDTO(fileName,fileUrl,uId);
-        }catch (Exception e){
+            List<Mp4Data1> mp4DataList = mp4Data1Repo.findBydtId(uId);
+            if (!mp4DataList.isEmpty() && !file.isEmpty()) {
+                File fileObj = convertMultiPartFileToFile(file);
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+                fileObj.delete();
+                String fileUrl = s3Client.getUrl(bucketName, fileName).toString();
+
+                // Update existing Mp4Data1 entries
+                for (Mp4Data1 mp4Data : mp4DataList) {
+                    mp4Data.setFName(fileName);
+                    mp4Data.setFUrl(fileUrl);
+                    mp4Data1Repo.save(mp4Data);
+                }
+                return new MediaTypeDTO(fileName, fileUrl, uId);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return new MediaTypeDTO("No Data","No Data","No Data");
+        return new MediaTypeDTO("No Data", "No Data", "No Data");
     }
+
+
+//    public MediaTypeDTO updateSecondSubUploadMp3(MultipartFile file, String uId) {
+//        try {
+//            File fileObj = convertMultiPartFileToFile(file);
+//            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
+//            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
+//            fileObj.delete();
+//            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
+//            Mp3Data2 mp3Data2= new Mp3Data2(fileName,fileUrl,uId);
+//            mp3Data2Repo.save(mp3Data2);
+//            return new MediaTypeDTO(fileName,fileUrl,uId);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//        return new MediaTypeDTO("No Data","No Data","No Data");
+//    }
+//
+//    public MediaTypeDTO updateSecondSubUploadMp4(MultipartFile file, String uId) {
+//        try {
+//            File fileObj = convertMultiPartFileToFile(file);
+//            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
+//            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
+//            fileObj.delete();
+//            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
+//            Mp4Data2 mp4Data2= new Mp4Data2(fileName,fileUrl,uId);
+//            mp4Data2Repo.save(mp4Data2);
+//            return new MediaTypeDTO(fileName,fileUrl,uId);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//        return new MediaTypeDTO("No Data","No Data","No Data");
+//    }
 
     public MediaTypeDTO updateSecondSubUploadMp3(MultipartFile file, String uId) {
         try {
-            File fileObj = convertMultiPartFileToFile(file);
-            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
-            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
-            fileObj.delete();
-            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
-            Mp3Data2 mp3Data2= new Mp3Data2(fileName,fileUrl,uId);
-            mp3Data2Repo.save(mp3Data2);
-            return new MediaTypeDTO(fileName,fileUrl,uId);
-        }catch (Exception e){
+            List<Mp3Data2> mp3DataList = mp3Data2Repo.findBydtId(uId);
+            if (!mp3DataList.isEmpty() && !file.isEmpty()) {
+                File fileObj = convertMultiPartFileToFile(file);
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+                fileObj.delete();
+                String fileUrl = s3Client.getUrl(bucketName, fileName).toString();
+
+                // Update existing Mp3Data2 entries
+                for (Mp3Data2 mp3Data : mp3DataList) {
+                    mp3Data.setFName(fileName);
+                    mp3Data.setFUrl(fileUrl);
+                    mp3Data2Repo.save(mp3Data);
+                }
+                return new MediaTypeDTO(fileName, fileUrl, uId);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return new MediaTypeDTO("No Data","No Data","No Data");
+        return new MediaTypeDTO("No Data", "No Data", "No Data");
     }
 
     public MediaTypeDTO updateSecondSubUploadMp4(MultipartFile file, String uId) {
         try {
-            File fileObj = convertMultiPartFileToFile(file);
-            String fileName =System.currentTimeMillis()+"_"+file.getOriginalFilename();
-            s3Client.putObject(new PutObjectRequest(bucketName,fileName,fileObj));
-            fileObj.delete();
-            String fileUrl = s3Client.getUrl(bucketName,fileName).toString();
-            Mp4Data2 mp4Data2= new Mp4Data2(fileName,fileUrl,uId);
-            mp4Data2Repo.save(mp4Data2);
-            return new MediaTypeDTO(fileName,fileUrl,uId);
-        }catch (Exception e){
+            List<Mp4Data2> mp4DataList = mp4Data2Repo.findBydtId(uId);
+            if (!mp4DataList.isEmpty() && !file.isEmpty()) {
+                File fileObj = convertMultiPartFileToFile(file);
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
+                fileObj.delete();
+                String fileUrl = s3Client.getUrl(bucketName, fileName).toString();
+
+                // Update existing Mp4Data2 entries
+                for (Mp4Data2 mp4Data : mp4DataList) {
+                    mp4Data.setFName(fileName);
+                    mp4Data.setFUrl(fileUrl);
+                    mp4Data2Repo.save(mp4Data);
+                }
+                return new MediaTypeDTO(fileName, fileUrl, uId);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return new MediaTypeDTO("No Data","No Data","No Data");
+        return new MediaTypeDTO("No Data", "No Data", "No Data");
     }
+
+
 }

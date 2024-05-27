@@ -33,6 +33,9 @@ public class ImgSubSecond {
     @Column(name = "fsMalUid")
     private String fsMalUid;
 
+    @Column(name = "commonId")
+    private String commonId;
+
     public ImgSubSecond() {
     }
     @PrePersist
@@ -46,13 +49,20 @@ public class ImgSubSecond {
             engId="No Data";
         }if (malId==null){
             malId="No Data";
+        }if (fsEngUid==null){
+            fsEngUid="No Data";
+        }if (fsMalUid==null){
+            fsMalUid="No Data";
+        }if (commonId==null){
+            commonId="No Data";
         }
     }
 
-    public ImgSubSecond(String fName, String fUrl, String engId, String malId) {
+    public ImgSubSecond(String fName, String fUrl, String engId, String malId, String commonId) {
         this.fName = fName;
         this.fUrl = fUrl;
         this.engId = engId;
         this.malId = malId;
+        this.commonId = commonId;
     }
 }
