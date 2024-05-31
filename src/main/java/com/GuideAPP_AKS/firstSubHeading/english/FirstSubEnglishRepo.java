@@ -17,4 +17,8 @@ public interface FirstSubEnglishRepo extends JpaRepository<FirstSubEnglish,Integ
     void deleteByMainUid(String mEngUid);
 
     List<FirstSubEnglish> findAllByMainUid(String mEngUid);
+
+    List<FirstSubEnglish> findAllByOrderByIdAsc();
+
+    Optional<FirstSubEnglish> findBytitle(String title);
 }

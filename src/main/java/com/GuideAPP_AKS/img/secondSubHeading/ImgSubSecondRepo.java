@@ -23,4 +23,5 @@ public interface ImgSubSecondRepo extends JpaRepository<ImgSubSecond,Integer> {
     void deleteByCommonId(String commonId);
 
 
+    Optional<ImgSubSecond> findByImgIDAndCommonId(Integer imgId, String commonId);
 }

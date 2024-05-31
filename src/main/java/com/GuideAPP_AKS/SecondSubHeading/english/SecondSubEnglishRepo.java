@@ -19,4 +19,8 @@ public interface SecondSubEnglishRepo extends JpaRepository<SecondSubEnglish,Int
     void deleteByFsUid(String fsUid);
 
     List<SecondSubEnglish> findAllByFsUid(String fsUid);
+
+    List<SecondSubEnglish> findAllByOrderByIdAsc();
+
+    Optional<SecondSubEnglish> findBytitle(String title);
 }

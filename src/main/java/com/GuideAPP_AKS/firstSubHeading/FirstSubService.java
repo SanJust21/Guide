@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FirstSubService {
@@ -44,6 +45,13 @@ public class FirstSubService {
 
     public ResponseEntity<?> addSubDataMalayalam(String uId, MainDTO mainDTO) {
         try {
+
+            Optional<FirstSubMalayalam> existingTitle = firstSubMalayalamRepo.findBytitle(mainDTO.getTitle());
+            if (existingTitle.isPresent()){
+                String titleData = mainDTO.getTitle();
+                return new ResponseEntity<>(titleData+" is already exist in the database",HttpStatus.CONFLICT);
+            }
+
             String randomId = alphaNumeric.generateRandomNumber();
             FirstSubMalayalam firstSubMalayalam = new FirstSubMalayalam();
             firstSubMalayalam.setFsUid(randomId);
@@ -61,6 +69,13 @@ public class FirstSubService {
 
     public ResponseEntity<?> addSubDataEnglish(String uId, MainDTO mainDTO) {
         try {
+
+            Optional<FirstSubEnglish> existingTitle = firstSubEnglishRepo.findBytitle(mainDTO.getTitle());
+            if (existingTitle.isPresent()){
+                String titleData = mainDTO.getTitle();
+                return new ResponseEntity<>(titleData+" is already exist in the database",HttpStatus.CONFLICT);
+            }
+
             String randomId = alphaNumeric.generateRandomNumber();
             FirstSubEnglish firstSubEnglish = new FirstSubEnglish();
             firstSubEnglish.setFsUid(randomId);

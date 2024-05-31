@@ -1,5 +1,6 @@
 package com.GuideAPP_AKS.UPDATE.MainTitle;
 
+import com.GuideAPP_AKS.firstSubHeading.malayalam.FirstSubMalayalam;
 import com.GuideAPP_AKS.img.mainHeading.ImgData;
 import com.GuideAPP_AKS.img.mainHeading.ImgRepo;
 import com.GuideAPP_AKS.mainHeading.MainDTO;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,7 +43,12 @@ public class MainUpdateService {
                 mainTitleMal1.setDescription(mainDTO.getDescription());
                 mainTitleMal1.setRef(mainDTO.getReferenceURL());
                 mainTitleMalRepo.save(mainTitleMal1);
-                return new ResponseEntity<>(mainTitleMal1,HttpStatus.OK);
+                //return new ResponseEntity<>(mainTitleMal1,HttpStatus.OK);
+                // Fetch all records ordered by primary key
+                List<MainTitleMal> orderedList = mainTitleMalRepo.findAll();
+                orderedList.sort(Comparator.comparing(MainTitleMal::getMMalId));
+
+                return new ResponseEntity<>(orderedList, HttpStatus.OK);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -55,7 +63,12 @@ public class MainUpdateService {
             mainTitleEng.setDescription(mainDTO.getDescription());
             mainTitleEng.setRef(mainDTO.getReferenceURL());
             mainTitleEngRepo.save(mainTitleEng);
-            return new ResponseEntity<>(mainTitleEng,HttpStatus.OK);
+            //return new ResponseEntity<>(mainTitleEng,HttpStatus.OK);
+            // Fetch all records ordered by primary key
+            List<MainTitleEng> orderedList = mainTitleEngRepo.findAll();
+            orderedList.sort(Comparator.comparing(MainTitleEng::getMEngId));
+
+            return new ResponseEntity<>(orderedList, HttpStatus.OK);
         }catch (Exception e){
             e.printStackTrace();
         }

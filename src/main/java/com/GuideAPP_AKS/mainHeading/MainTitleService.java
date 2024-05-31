@@ -43,6 +43,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -103,6 +104,13 @@ public class MainTitleService {
 
     public ResponseEntity<?> addMainTitleEng(MainDTO mainDTO) {
         try {
+
+            Optional<MainTitleEng> existingTitle = mtEngRepo.findBytitle(mainDTO.getTitle());
+            if (existingTitle.isPresent()){
+                String titleData = mainDTO.getTitle();
+                return new ResponseEntity<>(titleData+" is already exist in the database",HttpStatus.CONFLICT);
+            }
+
             String randomId = alphaNumeric.generateRandomNumber();
             MainTitleEng mtEng = new MainTitleEng();
             mtEng.setMEngUid(randomId);
@@ -119,6 +127,13 @@ public class MainTitleService {
 
     public ResponseEntity<?> addMainTitleMal(MainDTO mainDTO) {
         try {
+
+            Optional<MainTitleMal> existingTitle =mtMalRepo.findBytitle(mainDTO.getTitle());
+            if (existingTitle.isPresent()){
+                String titleData = mainDTO.getTitle();
+                return new ResponseEntity<>(titleData+" is already exist in the database",HttpStatus.CONFLICT);
+            }
+
             String randomId = alphaNumeric.generateRandomNumber();
             MainTitleMal mtMal = new MainTitleMal();
             mtMal.setMMalUid(randomId);
@@ -138,6 +153,9 @@ public class MainTitleService {
         try {
             List<CombinedData> combinedData = new ArrayList<>();
             List<MainTitleEng> mainTitleEngs = mtEngRepo.findAll();
+
+            mainTitleEngs.sort(Comparator.comparing(MainTitleEng::getMEngId));
+
             for (MainTitleEng mainTitleEng : mainTitleEngs){
                 CombinedData combinedData1 = new CombinedData();
                 combinedData1.setTitle(mainTitleEng.getTitle());
@@ -154,12 +172,15 @@ public class MainTitleService {
                 }
 
                 List<ImgData> imgData =imgRepo.findByengId(mainTitleEng.getMEngUid());
+                imgData.sort(Comparator.comparing(ImgData::getImgID));
                 combinedData1.setImgDataList(imgData);
 
                 List<Mp3Data> mp3Data = mp3Repo.findBydtId(mainTitleEng.getMEngUid());
+                mp3Data.sort(Comparator.comparing(Mp3Data::getId));
                 combinedData1.setMp3DataList(mp3Data);
 
                 List<Mp4Data> mp4Data = mp4DataRepo.findBydtId(mainTitleEng.getMEngUid());
+                mp4Data.sort(Comparator.comparing((Mp4Data::getId)));
                 combinedData1.setMp4DataList(mp4Data);
 
                 combinedData.add(combinedData1);
@@ -175,6 +196,9 @@ public class MainTitleService {
         try {
             List<CombinedData> combinedDataList = new ArrayList<>();
             List<MainTitleMal> mainTitleMals = mtMalRepo.findAll();
+
+            mainTitleMals.sort(Comparator.comparing(MainTitleMal::getMMalId));
+
             for (MainTitleMal mainTitleMal : mainTitleMals){
                 CombinedData combinedData = new CombinedData();
                 combinedData.setTitle(mainTitleMal.getTitle());
@@ -191,12 +215,15 @@ public class MainTitleService {
                 }
 
                 List<ImgData> imgData =imgRepo.findBymalId(mainTitleMal.getMMalUid());
+                imgData.sort(Comparator.comparing(ImgData::getImgID));
                 combinedData.setImgDataList(imgData);
 
                 List<Mp3Data> mp3Data = mp3Repo.findBydtId(mainTitleMal.getMMalUid());
+                mp3Data.sort(Comparator.comparing(Mp3Data::getId));
                 combinedData.setMp3DataList(mp3Data);
 
                 List<Mp4Data> mp4Data = mp4DataRepo.findBydtId(mainTitleMal.getMMalUid());
+                mp4Data.sort(Comparator.comparing((Mp4Data::getId)));
                 combinedData.setMp4DataList(mp4Data);
 
                 combinedDataList.add(combinedData);
@@ -229,7 +256,7 @@ public class MainTitleService {
                 }
 
                 List<FirstSubEnglish> firstSubEnglishList = firstSubEnglishRepo.findByMainUid(mainId);
-
+                firstSubEnglishList.sort(Comparator.comparing(FirstSubEnglish::getId));
                 List<CombinedDataSub> combinedDataSubList = new ArrayList<>();
                 firstSubEnglishList.forEach(firstSubEnglish -> {
                     CombinedDataSub combinedDataSub = new CombinedDataSub();
@@ -243,18 +270,22 @@ public class MainTitleService {
 
                     // Fetching images for the current first subheading
                     List<ImgSubFirst> imgSubFirstList = imgSubFirstRepo.findByEngId(firstSubEnglish.getFsUid());
+                    imgSubFirstList.sort(Comparator.comparing(ImgSubFirst::getImgID));
                     combinedDataSub.setImgDataList(imgSubFirstList);
 
                     // Fetching audio for the current first subheading
                     List<Mp3Data1> mp3Data1List = mp3Data1Repo.findBydtId(firstSubEnglish.getFsUid());
+                    mp3Data1List.sort(Comparator.comparing(Mp3Data1::getId));
                     combinedDataSub.setMp3DataList(mp3Data1List);
 
                     // Fetching video for the current first subheading
                     List<Mp4Data1> mp4Data1List = mp4Data1Repo.findBydtId(firstSubEnglish.getFsUid());
+                    mp4Data1List.sort(Comparator.comparing(Mp4Data1::getId));
                     combinedDataSub.setMp4DataList(mp4Data1List);
 
                     // Fetching data for SecondSubEnglish
                     List<SecondSubEnglish> secondSubEnglishList = secondSubEnglishRepo.findByFsUidIn(firstSubEnglishList.stream().map(FirstSubEnglish::getFsUid).collect(Collectors.toList()));
+                    secondSubEnglishList.sort(Comparator.comparing(SecondSubEnglish::getId));
                     List<CombinedDataSubSub> combinedDataSubSubList = new ArrayList<>();
                     secondSubEnglishList.forEach(secondSubEnglish -> {
                         CombinedDataSubSub combinedDataSubSub = new CombinedDataSubSub();
@@ -266,12 +297,15 @@ public class MainTitleService {
                         combinedDataSubSub.setmUid(secondSubEnglish.getFsUid());
                         // Fetching images for SecondSubEnglish
                         List<ImgSubSecond> imgSubSecondList = imgSubSecondRepo.findByengId(secondSubEnglish.getSsUid());
+                        imgSubSecondList.sort(Comparator.comparing(ImgSubSecond::getImgID));
                         combinedDataSubSub.setImgData2List(imgSubSecondList);
                         // Fetching audio for SecondSubEnglish
                         List<Mp3Data2> mp3Data2List = mp3Data2Repo.findBydtId(secondSubEnglish.getSsUid());
+                        mp3Data2List.sort(Comparator.comparing(Mp3Data2::getId));
                         combinedDataSubSub.setMp3Data2List(mp3Data2List);
                         // Fetching video for SecondSubEnglish
                         List<Mp4Data2> mp4Data2List = mp4Data2Repo.findBydtId(secondSubEnglish.getSsUid());
+                        mp4Data2List.sort(Comparator.comparing(Mp4Data2::getId));
                         combinedDataSubSub.setMp4Data2List(mp4Data2List);
 
                         combinedDataSubSubList.add(combinedDataSubSub);
@@ -286,12 +320,15 @@ public class MainTitleService {
 
 
                 List<ImgData> imgData =imgRepo.findByengId(mainTitleEng.getMEngUid());
+                imgData.sort(Comparator.comparing(ImgData::getImgID));
                 combinedData1.setImgDataList(imgData);
 
                 List<Mp3Data> mp3Data = mp3Repo.findBydtId(mainTitleEng.getMEngUid());
+                mp3Data.sort(Comparator.comparing(Mp3Data::getId));
                 combinedData1.setMp3DataList(mp3Data);
 
                 List<Mp4Data> mp4Data = mp4DataRepo.findBydtId(mainTitleEng.getMEngUid());
+                mp4Data.sort(Comparator.comparing((Mp4Data::getId)));
                 combinedData1.setMp4DataList(mp4Data);
 
                 combinedDataList.add(combinedData1);
@@ -323,7 +360,7 @@ public class MainTitleService {
                 }
 
                 List<FirstSubMalayalam> firstSubMalayalamList = firstSubMalayalamRepo.findByMainUid(mainId);
-
+                firstSubMalayalamList.sort(Comparator.comparing(FirstSubMalayalam::getId));
                 List<CombinedDataSub> combinedDataSubList = new ArrayList<>();
                 firstSubMalayalamList.forEach(firstSubMalayalam -> {
                     CombinedDataSub combinedDataSub = new CombinedDataSub();
@@ -337,18 +374,22 @@ public class MainTitleService {
 
                     // Fetching images for the current first subheading
                     List<ImgSubFirst> imgSubFirstList = imgSubFirstRepo.findBymalId(firstSubMalayalam.getFsUid());
+                    imgSubFirstList.sort(Comparator.comparing(ImgSubFirst::getImgID));
                     combinedDataSub.setImgDataList(imgSubFirstList);
 
                     // Fetching audio for the current first subheading
                     List<Mp3Data1> mp3Data1List = mp3Data1Repo.findBydtId(firstSubMalayalam.getFsUid());
+                    mp3Data1List.sort(Comparator.comparing(Mp3Data1::getId));
                     combinedDataSub.setMp3DataList(mp3Data1List);
 
                     // Fetching video for the current first subheading
                     List<Mp4Data1> mp4Data1List = mp4Data1Repo.findBydtId(firstSubMalayalam.getFsUid());
+                    mp4Data1List.sort(Comparator.comparing(Mp4Data1::getId));
                     combinedDataSub.setMp4DataList(mp4Data1List);
 
                     // Fetching data for SecondSubMalayalam
                     List<SecondSubMalayalam> secondSubMalayalamList = secondSubMalayalamRepo.findByFsUidIn(firstSubMalayalamList.stream().map(FirstSubMalayalam::getFsUid).collect(Collectors.toList()));
+                    secondSubMalayalamList.sort(Comparator.comparing(SecondSubMalayalam::getId));
                     List<CombinedDataSubSub> combinedDataSubSubList = new ArrayList<>();
                     secondSubMalayalamList.forEach(secondSubMalayalam -> {
                         CombinedDataSubSub combinedDataSubSub = new CombinedDataSubSub();
@@ -360,12 +401,15 @@ public class MainTitleService {
                         combinedDataSubSub.setmUid(secondSubMalayalam.getFsUid());
                         // Fetching images for SecondSubMalayalam
                         List<ImgSubSecond> imgSubSecondList = imgSubSecondRepo.findBymalId(secondSubMalayalam.getSsUid());
+                        imgSubSecondList.sort(Comparator.comparing(ImgSubSecond::getImgID));
                         combinedDataSubSub.setImgData2List(imgSubSecondList);
                         // Fetching audio for SecondSubMalayalam
                         List<Mp3Data2> mp3Data2List = mp3Data2Repo.findBydtId(secondSubMalayalam.getSsUid());
+                        mp3Data2List.sort(Comparator.comparing(Mp3Data2::getId));
                         combinedDataSubSub.setMp3Data2List(mp3Data2List);
                         // Fetching video for SecondSubMalayalam
                         List<Mp4Data2> mp4Data2List = mp4Data2Repo.findBydtId(secondSubMalayalam.getSsUid());
+                        mp4Data2List.sort(Comparator.comparing(Mp4Data2::getId));
                         combinedDataSubSub.setMp4Data2List(mp4Data2List);
 
                         combinedDataSubSubList.add(combinedDataSubSub);
@@ -380,12 +424,15 @@ public class MainTitleService {
                 combinedData.setCombinedDataSubList(combinedDataSubList);
 
                 List<ImgData> imgData =imgRepo.findBymalId(mainTitleMal.getMMalUid());
+                imgData.sort(Comparator.comparing(ImgData::getImgID));
                 combinedData.setImgDataList(imgData);
 
                 List<Mp3Data> mp3Data = mp3Repo.findBydtId(mainTitleMal.getMMalUid());
+                mp3Data.sort(Comparator.comparing(Mp3Data::getId));
                 combinedData.setMp3DataList(mp3Data);
 
                 List<Mp4Data> mp4Data = mp4DataRepo.findBydtId(mainTitleMal.getMMalUid());
+                mp4Data.sort(Comparator.comparing((Mp4Data::getId)));
                 combinedData.setMp4DataList(mp4Data);
 
 

@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class SecondSubService {
     @Autowired
@@ -31,6 +33,13 @@ public class SecondSubService {
 
     public ResponseEntity<?> addSubDataEnglish(String uId, MainDTO mainDTO) {
         try {
+
+            Optional<SecondSubEnglish> existingTitle = secondSubEnglishRepo.findBytitle(mainDTO.getTitle());
+            if (existingTitle.isPresent()){
+                String titleData = mainDTO.getTitle();
+                return new ResponseEntity<>(titleData+" is already exist in the database",HttpStatus.CONFLICT);
+            }
+
             String randomId = alphaNumeric.generateRandomNumber();
             SecondSubEnglish secondSubEnglish = new SecondSubEnglish();
             secondSubEnglish.setSsUid(randomId);
@@ -48,6 +57,13 @@ public class SecondSubService {
 
     public ResponseEntity<?> addSubDataMalayalam(String uId, MainDTO mainDTO) {
         try {
+
+            Optional<SecondSubMalayalam> existingTitle = secondSubMalayalamRepo.findBytitle(mainDTO.getTitle());
+            if (existingTitle.isPresent()){
+                String titleData = mainDTO.getTitle();
+                return new ResponseEntity<>(titleData+" is already exist in the database",HttpStatus.CONFLICT);
+            }
+
             String randomId = alphaNumeric.generateRandomNumber();
             SecondSubMalayalam secondSubMalayalam = new SecondSubMalayalam();
             secondSubMalayalam.setSsUid(randomId);

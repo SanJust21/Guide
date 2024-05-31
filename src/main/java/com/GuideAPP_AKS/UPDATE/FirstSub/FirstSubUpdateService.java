@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,7 +29,10 @@ public class FirstSubUpdateService {
                     firstSubMalayalam1.setDescription(mainDTO.getDescription());
                     firstSubMalayalam1.setRef(mainDTO.getReferenceURL());
                     firstSubMalayalamRepo.save(firstSubMalayalam1);
-                    return new ResponseEntity<>(firstSubMalayalam1,HttpStatus.OK);
+                    //return new ResponseEntity<>(firstSubMalayalam1,HttpStatus.OK);
+                    // Fetch all records ordered by primary key
+                    List<FirstSubMalayalam> orderedList = firstSubMalayalamRepo.findAllByOrderByIdAsc();
+                    return new ResponseEntity<>(orderedList, HttpStatus.OK);
                 }
             }
         }catch (Exception e){
@@ -48,7 +52,10 @@ public class FirstSubUpdateService {
                     firstSubEnglish1.setDescription(mainDTO.getDescription());
                     firstSubEnglish1.setRef(mainDTO.getReferenceURL());
                     firstSubEnglishRepo.save(firstSubEnglish1);
-                    return new ResponseEntity<>(firstSubEnglish1,HttpStatus.OK);
+                   // return new ResponseEntity<>(firstSubEnglish1,HttpStatus.OK);
+                    // Fetch all records ordered by primary key
+                    List<FirstSubEnglish> orderedList = firstSubEnglishRepo.findAllByOrderByIdAsc();
+                    return new ResponseEntity<>(orderedList, HttpStatus.OK);
                 }
             }
         }catch (Exception e){
