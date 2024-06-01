@@ -19,9 +19,7 @@ public interface SecondSubMalayalamRepo extends JpaRepository<SecondSubMalayalam
 
     List<SecondSubMalayalam> findAllByFsUid(String fsUid);
 
-    void deleteAllByfsUid(String malId);
 
-    SecondSubMalayalam findByfsUid(String fsMalId);
 
     Optional<SecondSubMalayalam> findBytitle(String title);
 }

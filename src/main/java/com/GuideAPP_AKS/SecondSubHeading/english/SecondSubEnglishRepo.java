@@ -22,7 +22,7 @@ public interface SecondSubEnglishRepo extends JpaRepository<SecondSubEnglish,Int
 
     SecondSubEnglish findByfsUid(String fsId);
 
-    void deleteAllByfsUid(String fsId);
-
     Optional<SecondSubEnglish> findBytitle(String title);
+
+    void deleteAllByfsUid(String fsEngId);
 }
