@@ -22,16 +22,26 @@ import com.GuideAPP_AKS.mpFileData.mp4.firstSub.Mp4Data1;
 import com.GuideAPP_AKS.mpFileData.mp4.firstSub.Mp4Data1Repo;
 import com.GuideAPP_AKS.mpFileData.mp4.secondSub.Mp4Data2;
 import com.GuideAPP_AKS.mpFileData.mp4.secondSub.Mp4Data2Repo;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class FirstSubDeleteService {
+    @Value("${aws.s3.bucketName}")
+    private String bucketName;
+    @Autowired
+    private AmazonS3 s3Client;
     @Autowired
     private FirstSubEnglishRepo firstSubEnglishRepo;
     @Autowired
@@ -76,16 +86,25 @@ public class FirstSubDeleteService {
                         List<ImgSubFirst> imgSubFirst1 = imgSubFirstRepo.findByengId(fsEngId);
                         if (!imgSubFirst1.isEmpty()){
                             log.info("Inside jpg");
+                            List<String> fileNamesToDelete = imgSubFirst1.stream().map(ImgSubFirst::getFName)
+                                    .collect(Collectors.toList());
+                            deleteDataFromS3(fileNamesToDelete);
                             imgSubFirstRepo.deleteAllByengId(fsEngId);
                         }
                         List<Mp3Data1> mp3Data1 = mp3Data1Repo.findBydtId(fsEngId);
                         if (!mp3Data1.isEmpty()){
                             log.info("Inside mp3");
+                            List<String> fileNamesToDelete = mp3Data1.stream().map(Mp3Data1::getFName)
+                                    .collect(Collectors.toList());
+                            deleteDataFromS3(fileNamesToDelete);
                             mp3Data1Repo.deleteAllBydtId(fsEngId);
                         }
                         List<Mp4Data1> mp4Data1s = mp4Data1Repo.findBydtId(fsEngId);
                         if (!mp4Data1s.isEmpty()){
                             log.info("Inside mp4");
+                            List<String> fileNamesToDelete = mp4Data1s.stream().map(Mp4Data1::getFName)
+                                    .collect(Collectors.toList());
+                            deleteDataFromS3(fileNamesToDelete);
                             mp4Data1Repo.deleteAllBydtId(fsEngId);
                         }
                         SecondSubEnglish secondSubEnglish = secondSubEnglishRepo.findByfsUid(fsEngId);
@@ -97,15 +116,24 @@ public class FirstSubDeleteService {
                             List<ImgSubSecond> imgSubSeconds = imgSubSecondRepo.findByfsEngUid(sEngId);
                             if (!imgSubSeconds.isEmpty()){
                                 log.info("Inside secondSubEnglish jpg");
+                                List<String> fileNamesToDelete = imgSubSeconds.stream().map(ImgSubSecond::getFName)
+                                        .collect(Collectors.toList());
+                                deleteDataFromS3(fileNamesToDelete);
                                 imgSubSecondRepo.deleteAllByfsEngUid(fsEngId);
                             }
                             List<Mp3Data2> mp3Data2s =mp3Data2Repo.findBydtId(sEngId);
                             if (!mp3Data2s.isEmpty()){
                                 log.info("Inside secondSubEnglish mp3");
+                                List<String> fileNamesToDelete = mp3Data2s.stream().map(Mp3Data2::getFName)
+                                        .collect(Collectors.toList());
+                                deleteDataFromS3(fileNamesToDelete);
                                 mp3Data2Repo.deleteAllBydtId(sEngId);
                             }
                             List<Mp4Data2> mp4Data2s = mp4Data2Repo.findBydtId(sEngId);
                             if (!mp4Data2s.isEmpty()){
+                                List<String> fileNamesToDelete = mp4Data2s.stream().map(Mp4Data2::getFName)
+                                        .collect(Collectors.toList());
+                                deleteDataFromS3(fileNamesToDelete);
                                 log.info("Inside secondSubEnglish mp4");
                                 mp4Data2Repo.deleteAllBydtId(sEngId);
                             }
@@ -128,10 +156,16 @@ public class FirstSubDeleteService {
                         List<Mp3Data1> mp3Data1 = mp3Data1Repo.findBydtId(fsMalId);
                         if (!mp3Data1.isEmpty()){
                             log.info("inside firstSub mp3");
+                            List<String> fileNamesToDelete = mp3Data1.stream().map(Mp3Data1::getFName)
+                                    .collect(Collectors.toList());
+                            deleteDataFromS3(fileNamesToDelete);
                             mp3Data1Repo.deleteAllBydtId(fsMalId);
                         }
                         List<Mp4Data1> mp4Data1s = mp4Data1Repo.findBydtId(fsMalId);
                         if (!mp4Data1s.isEmpty()){
+                            List<String> fileNamesToDelete = mp4Data1s.stream().map(Mp4Data1::getFName)
+                                    .collect(Collectors.toList());
+                            deleteDataFromS3(fileNamesToDelete);
                             log.info("inside firstSub mp4");
                             mp4Data1Repo.deleteAllBydtId(fsMalId);
                         }
@@ -148,11 +182,17 @@ public class FirstSubDeleteService {
                                 List<Mp3Data2> mp3Data2s =mp3Data2Repo.findBydtId(sMalI);
                                 if (!mp3Data2s.isEmpty()){
                                     log.info("inside secondSubMalayalam mp3");
+                                    List<String> fileNamesToDelete = mp3Data2s.stream().map(Mp3Data2::getFName)
+                                            .collect(Collectors.toList());
+                                    deleteDataFromS3(fileNamesToDelete);
                                     mp3Data2Repo.deleteAllBydtId(sMalI);
                                 }
                                 List<Mp4Data2> mp4Data2s = mp4Data2Repo.findBydtId(sMalI);
                                 if (!mp4Data2s.isEmpty()){
                                     log.info("inside secondSubMalayalam mp4");
+                                    List<String> fileNamesToDelete = mp4Data2s.stream().map(Mp4Data2::getFName)
+                                            .collect(Collectors.toList());
+                                    deleteDataFromS3(fileNamesToDelete);
                                     mp4Data2Repo.deleteAllBydtId(sMalI);
                                 }
                             }
@@ -165,5 +205,16 @@ public class FirstSubDeleteService {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    private void deleteDataFromS3(List<String> fileNamesToDelete) {
+        for (String fileName : fileNamesToDelete){
+            try {
+                s3Client.deleteObject(new DeleteObjectRequest(bucketName,fileName));
+
+            }catch (AmazonServiceException e){
+                e.printStackTrace();
+            }
+        }
     }
 }

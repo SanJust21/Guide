@@ -1,5 +1,7 @@
 package com.GuideAPP_AKS.SecondSubHeading;
 
+import com.GuideAPP_AKS.SecondSubHeading.commonId.CommonIdSs;
+import com.GuideAPP_AKS.SecondSubHeading.commonId.CommonIdSsRepo;
 import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglish;
 import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglishRepo;
 import com.GuideAPP_AKS.SecondSubHeading.malayalam.SecondSubMalayalam;
@@ -30,6 +32,8 @@ public class SecondSubService {
     private Mp3Data2Repo mp3Data2Repo;
     @Autowired
     private Mp4Data2Repo mp4Data2Repo;
+    @Autowired
+    private CommonIdSsRepo commonIdSsRepo;
 
     public ResponseEntity<?> addSubDataEnglish(String uId, MainDTO mainDTO) {
         try {
@@ -73,5 +77,14 @@ public class SecondSubService {
             e.printStackTrace();
         }
         return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    public ResponseEntity<?> generateCommonSs(String englishId, String malId) {
+        CommonIdSs commonIdSs = new CommonIdSs();
+        commonIdSs.setSsEngId(englishId);
+        commonIdSs.setSsMalId(malId);
+        commonIdSs.setSsCommonId(alphaNumeric.generateRandomNumber());
+        commonIdSsRepo.save(commonIdSs);
+        return new ResponseEntity<>(commonIdSs,HttpStatus.OK);
     }
 }
