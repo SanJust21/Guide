@@ -284,7 +284,7 @@ public class MainTitleService {
                     combinedDataSub.setMp4DataList(mp4Data1List);
 
                     // Fetching data for SecondSubEnglish
-                    List<SecondSubEnglish> secondSubEnglishList = secondSubEnglishRepo.findByFsUidIn(firstSubEnglishList.stream().map(FirstSubEnglish::getFsUid).collect(Collectors.toList()));
+                    List<SecondSubEnglish> secondSubEnglishList = secondSubEnglishRepo.findByfsUid(firstSubEnglish.getFsUid());
                     secondSubEnglishList.sort(Comparator.comparing(SecondSubEnglish::getId));
                     List<CombinedDataSubSub> combinedDataSubSubList = new ArrayList<>();
                     secondSubEnglishList.forEach(secondSubEnglish -> {
@@ -388,7 +388,7 @@ public class MainTitleService {
                     combinedDataSub.setMp4DataList(mp4Data1List);
 
                     // Fetching data for SecondSubMalayalam
-                    List<SecondSubMalayalam> secondSubMalayalamList = secondSubMalayalamRepo.findByFsUidIn(firstSubMalayalamList.stream().map(FirstSubMalayalam::getFsUid).collect(Collectors.toList()));
+                    List<SecondSubMalayalam> secondSubMalayalamList = secondSubMalayalamRepo.findByfsUid(firstSubMalayalam.getFsUid());
                     secondSubMalayalamList.sort(Comparator.comparing(SecondSubMalayalam::getId));
                     List<CombinedDataSubSub> combinedDataSubSubList = new ArrayList<>();
                     secondSubMalayalamList.forEach(secondSubMalayalam -> {

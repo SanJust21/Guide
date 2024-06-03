@@ -22,4 +22,6 @@ public interface SecondSubMalayalamRepo extends JpaRepository<SecondSubMalayalam
     List<SecondSubMalayalam> findAllByOrderByIdAsc();
 
     Optional<SecondSubMalayalam> findBytitle(String title);
+
+    List<SecondSubMalayalam> findByfsUid(String fsUid);
 }
