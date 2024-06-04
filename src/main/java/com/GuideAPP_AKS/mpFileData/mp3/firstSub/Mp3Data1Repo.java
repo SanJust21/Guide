@@ -14,6 +14,8 @@ public interface Mp3Data1Repo extends JpaRepository<Mp3Data1,Integer> {
 
     void deleteByMainMalId(String mMalUid);
 
+    void deleteAllBydtId(String fsEngId);
+
     List<Mp3Data1> findByMainEngIdAndMainMalId(String mainEngId, String mainMalId);
 
     List<Mp3Data1> findByMainMalId(String mainMalId);

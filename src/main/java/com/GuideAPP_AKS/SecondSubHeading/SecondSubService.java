@@ -1,12 +1,29 @@
 package com.GuideAPP_AKS.SecondSubHeading;
 
+import com.GuideAPP_AKS.QR.CommonIdQRCode;
+import com.GuideAPP_AKS.SecondSubHeading.commonId.CommonIdSs;
+import com.GuideAPP_AKS.SecondSubHeading.commonId.CommonIdSsRepo;
 import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglish;
 import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglishRepo;
 import com.GuideAPP_AKS.SecondSubHeading.malayalam.SecondSubMalayalam;
 import com.GuideAPP_AKS.SecondSubHeading.malayalam.SecondSubMalayalamRepo;
+import com.GuideAPP_AKS.firstSubHeading.CombinedDataSub;
+import com.GuideAPP_AKS.firstSubHeading.FScommonId.CommonIdFs;
+import com.GuideAPP_AKS.firstSubHeading.english.FirstSubEnglish;
+import com.GuideAPP_AKS.img.firstSubHeading.ImgSubFirst;
+import com.GuideAPP_AKS.img.mainHeading.ImgData;
+import com.GuideAPP_AKS.img.secondSubHeading.ImgSubSecond;
 import com.GuideAPP_AKS.img.secondSubHeading.ImgSubSecondRepo;
+import com.GuideAPP_AKS.mainHeading.CombinedData;
 import com.GuideAPP_AKS.mainHeading.MainDTO;
+import com.GuideAPP_AKS.mainHeading.mainEng.MainTitleEng;
+import com.GuideAPP_AKS.mpFileData.mp3.firstSub.Mp3Data1;
+import com.GuideAPP_AKS.mpFileData.mp3.mainHeading.Mp3Data;
+import com.GuideAPP_AKS.mpFileData.mp3.secondSub.Mp3Data2;
 import com.GuideAPP_AKS.mpFileData.mp3.secondSub.Mp3Data2Repo;
+import com.GuideAPP_AKS.mpFileData.mp4.firstSub.Mp4Data1;
+import com.GuideAPP_AKS.mpFileData.mp4.mainHeading.Mp4Data;
+import com.GuideAPP_AKS.mpFileData.mp4.secondSub.Mp4Data2;
 import com.GuideAPP_AKS.mpFileData.mp4.secondSub.Mp4Data2Repo;
 import com.GuideAPP_AKS.util.AlphaNumeric;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +31,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +50,8 @@ public class SecondSubService {
     private Mp3Data2Repo mp3Data2Repo;
     @Autowired
     private Mp4Data2Repo mp4Data2Repo;
+    @Autowired
+    private CommonIdSsRepo commonIdSsRepo;
 
     public ResponseEntity<?> addSubDataEnglish(String uId, MainDTO mainDTO) {
         try {
@@ -79,66 +101,111 @@ public class SecondSubService {
         return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    public ResponseEntity<?> generateCommonSs(String englishId, String malId) {
+        CommonIdSs commonIdSs = new CommonIdSs();
+        commonIdSs.setSsEngId(englishId);
+        commonIdSs.setSsMalId(malId);
+        commonIdSs.setSsCommonId(alphaNumeric.generateRandomNumber());
+        commonIdSsRepo.save(commonIdSs);
+        return new ResponseEntity<>(commonIdSs,HttpStatus.OK);
+    }
 
+    public ResponseEntity<List<CombinedDataSubSub>> getCombinedList(String ssCommonId) {
+        try {
+            CommonIdSs commonIdSs = commonIdSsRepo.findByssCommonId(ssCommonId);
+            if (commonIdSs != null) {
+                List<SecondSubEnglish> secondSubEnglishList = secondSubEnglishRepo.findBySsUid(commonIdSs.getSsEngId());
+                secondSubEnglishList.sort(Comparator.comparing(SecondSubEnglish::getId));
+                List<CombinedDataSubSub> combinedDataSubSubList = new ArrayList<>();
 
-//    public ResponseEntity<List<com.GuideAPP_AKS.SecondSubHeading.CombinedDataSub>> getCombinedListEng() {
-//        try {
-//            List<com.GuideAPP_AKS.SecondSubHeading.CombinedDataSub> combinedData = new ArrayList<>();
-//            List<SecondSubEnglish> secondSubEnglishes = secondSubEnglishRepo.findAll();
-//            for (SecondSubEnglish secondSubEnglish : secondSubEnglishes){
-//                com.GuideAPP_AKS.SecondSubHeading.CombinedDataSub combinedData1 = new com.GuideAPP_AKS.SecondSubHeading.CombinedDataSub();
-//                combinedData1.setTitle(secondSubEnglish.getTitle());
-//                combinedData1.setDescription(secondSubEnglish.getDescription());
-//                combinedData1.setReferenceUrl(secondSubEnglish.getRef());
-//                combinedData1.setuId(secondSubEnglish.getSsUid());
-//                combinedData1.setmUid(secondSubEnglish.getFsUid());
-//
-//                List<ImgSubSecond> imgData =imgSubSecondRepo.findByengId(secondSubEnglish.getFsUid());
-//                combinedData1.setImgDataList(imgData);
-//
-//                List<Mp3Data2> mp3Data = mp3Data2Repo.findBydtId(secondSubEnglish.getSsUid());
-//                combinedData1.setMp3DataList(mp3Data);
-//
-//                List<Mp4Data2> mp4Data = mp4Data2Repo.findBydtId(secondSubEnglish.getSsUid());
-//                combinedData1.setMp4DataList(mp4Data);
-//
-//                combinedData.add(combinedData1);
-//            }
-//            return new ResponseEntity<>(combinedData,HttpStatus.OK);
-//
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-//
-//    public ResponseEntity<List<com.GuideAPP_AKS.firstSubHeading.CombinedDataSub>> getCombinedListMal() {
-//        try {
-//            List<com.GuideAPP_AKS.firstSubHeading.CombinedDataSub> combinedData = new ArrayList<>();
-//            List<FirstSubMalayalam> firstSubMalayalams = firstSubMalayalamRepo.findAll();
-//            for (FirstSubMalayalam firstSubMalayalam :firstSubMalayalams){
-//                com.GuideAPP_AKS.firstSubHeading.CombinedDataSub combinedData1 = new CombinedDataSub();
-//                combinedData1.setTitle(firstSubMalayalam.getTitle());
-//                combinedData1.setDescription(firstSubMalayalam.getDescription());
-//                combinedData1.setReferenceUrl(firstSubMalayalam.getRef());
-//                combinedData1.setmUid(firstSubMalayalam.getMainUid());
-//                combinedData1.setuId(firstSubMalayalam.getFsUid());
-//
-//                List<ImgSubFirst> imgData =imgSubFirstRepo.findBymalId(firstSubMalayalam.getFsUid());
-//                combinedData1.setImgDataList(imgData);
-//
-//                List<Mp3Data1> mp3Data = mp3Data1Repo.findBydtId(firstSubMalayalam.getFsUid());
-//                combinedData1.setMp3DataList(mp3Data);
-//
-//                List<Mp4Data1> mp4Data = mp4Data1Repo.findBydtId(firstSubMalayalam.getFsUid());
-//                combinedData1.setMp4DataList(mp4Data);
-//
-//                combinedData.add(combinedData1);
-//            }
-//            return new ResponseEntity<>(combinedData,HttpStatus.OK);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+                secondSubEnglishList.forEach(secondSubEnglish -> {
+                    CombinedDataSubSub combinedDataSubSub = new CombinedDataSubSub();
+                    // Set details of SecondSubEnglish
+                    combinedDataSubSub.setTitle(secondSubEnglish.getTitle());
+                    combinedDataSubSub.setDescription(secondSubEnglish.getDescription());
+                    combinedDataSubSub.setReferenceUrl(secondSubEnglish.getRef());
+                    combinedDataSubSub.setuId(secondSubEnglish.getSsUid());
+                    combinedDataSubSub.setmUid(secondSubEnglish.getFsUid());
+
+                    CommonIdSs commonIdSsEng = commonIdSsRepo.findBySsEngId(secondSubEnglish.getSsUid());
+                    if (commonIdSsEng != null){
+                        combinedDataSubSub.setSsCommonId(commonIdSsEng.getSsCommonId());
+                        combinedDataSubSub.setSsEngId(commonIdSsEng.getSsEngId());
+                        combinedDataSubSub.setSsMalId(commonIdSsEng.getSsMalId());
+                    }
+
+                    // Fetching images for SecondSubEnglish
+                    List<ImgSubSecond> imgSubSecondList = imgSubSecondRepo.findByengId(secondSubEnglish.getSsUid());
+                    imgSubSecondList.sort(Comparator.comparing(ImgSubSecond::getImgID));
+                    combinedDataSubSub.setImgData2List(imgSubSecondList);
+                    // Fetching audio for SecondSubEnglish
+                    List<Mp3Data2> mp3Data2List = mp3Data2Repo.findBydtId(secondSubEnglish.getSsUid());
+                    mp3Data2List.sort(Comparator.comparing(Mp3Data2::getId));
+                    combinedDataSubSub.setMp3Data2List(mp3Data2List);
+                    // Fetching video for SecondSubEnglish
+                    List<Mp4Data2> mp4Data2List = mp4Data2Repo.findBydtId(secondSubEnglish.getSsUid());
+                    mp4Data2List.sort(Comparator.comparing(Mp4Data2::getId));
+                    combinedDataSubSub.setMp4Data2List(mp4Data2List);
+
+                    combinedDataSubSubList.add(combinedDataSubSub);
+                });
+
+                return new ResponseEntity<>(combinedDataSubSubList, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ResponseEntity<List<CombinedDataSubSub>> getCombinedListMal(String ssCommonId) {
+        try {
+
+            CommonIdSs commonIdSs = commonIdSsRepo.findByssCommonId(ssCommonId);
+            if (commonIdSs != null) {
+                List<SecondSubMalayalam> secondSubMalayalamList = secondSubMalayalamRepo.findBySsUid(commonIdSs.getSsMalId());
+                secondSubMalayalamList.sort(Comparator.comparing(SecondSubMalayalam::getId));
+                List<CombinedDataSubSub> combinedDataSubSubList = new ArrayList<>();
+
+                secondSubMalayalamList.forEach(secondSubMalayalam -> {
+                    CombinedDataSubSub combinedDataSubSub = new CombinedDataSubSub();
+                    // Set details of SecondSubEnglish
+                    combinedDataSubSub.setTitle(secondSubMalayalam.getTitle());
+                    combinedDataSubSub.setDescription(secondSubMalayalam.getDescription());
+                    combinedDataSubSub.setReferenceUrl(secondSubMalayalam.getRef());
+                    combinedDataSubSub.setuId(secondSubMalayalam.getSsUid());
+                    combinedDataSubSub.setmUid(secondSubMalayalam.getFsUid());
+
+                    CommonIdSs commonIdSsEng = commonIdSsRepo.findBySsMalId(secondSubMalayalam.getSsUid());
+                    if (commonIdSsEng != null){
+                        combinedDataSubSub.setSsCommonId(commonIdSsEng.getSsCommonId());
+                        combinedDataSubSub.setSsEngId(commonIdSsEng.getSsEngId());
+                        combinedDataSubSub.setSsMalId(commonIdSsEng.getSsMalId());
+                    }
+
+                    // Fetching images for SecondSubEnglish
+                    List<ImgSubSecond> imgSubSecondList = imgSubSecondRepo.findBymalId(secondSubMalayalam.getSsUid());
+                    imgSubSecondList.sort(Comparator.comparing(ImgSubSecond::getImgID));
+                    combinedDataSubSub.setImgData2List(imgSubSecondList);
+                    // Fetching audio for SecondSubEnglish
+                    List<Mp3Data2> mp3Data2List = mp3Data2Repo.findBydtId(secondSubMalayalam.getSsUid());
+                    mp3Data2List.sort(Comparator.comparing(Mp3Data2::getId));
+                    combinedDataSubSub.setMp3Data2List(mp3Data2List);
+                    // Fetching video for SecondSubEnglish
+                    List<Mp4Data2> mp4Data2List = mp4Data2Repo.findBydtId(secondSubMalayalam.getSsUid());
+                    mp4Data2List.sort(Comparator.comparing(Mp4Data2::getId));
+                    combinedDataSubSub.setMp4Data2List(mp4Data2List);
+
+                    combinedDataSubSubList.add(combinedDataSubSub);
+                });
+
+                return new ResponseEntity<>(combinedDataSubSubList, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package com.GuideAPP_AKS.DELETE;
+package com.GuideAPP_AKS.DELETE.mainTitle;
 
 import com.GuideAPP_AKS.QR.CommonIdQRCode;
 import com.GuideAPP_AKS.QR.CommonIdQRCodeRepo;

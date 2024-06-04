@@ -20,6 +20,9 @@ public class CombinedDataSub {
     private String referenceUrl;
     private String uId;
     private String mUid;
+    private String fsCommonId;
+    private String fsEngId;
+    private String fsMalId;
 
 
     private List<ImgSubFirst> imgDataList;

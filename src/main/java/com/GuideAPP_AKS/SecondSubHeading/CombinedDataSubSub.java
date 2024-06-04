@@ -13,6 +13,9 @@ public class CombinedDataSubSub {
     private String referenceUrl;
     private String uId;
     private String mUid;
+    private String ssCommonId;
+    private String ssEngId;
+    private String ssMalId;
 
 
     private List<ImgSubSecond> imgData2List;

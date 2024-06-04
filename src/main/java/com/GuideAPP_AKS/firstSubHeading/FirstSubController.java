@@ -100,4 +100,37 @@ public class FirstSubController {
         }
         return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
+    @GetMapping(path = "genCommonId")
+    private ResponseEntity<?> generateCommonId(@RequestParam String engId,
+                                               @RequestParam String malId){
+        try {
+            return firstSubService.generateCommonIdFs(engId,malId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping(path = "/getAllByCommonId/{id}")
+    public ResponseEntity<?>getDetailsByCommonId(@PathVariable String id,@RequestParam Integer dtId){
+        try {
+            Optional<DataType> dataTypeOptional = dataTypeRepo.findById(dtId);
+            if (dataTypeOptional.isPresent()){
+                DataType dataType = dataTypeOptional.get();
+                String tData = dataType.getTalk();
+                if (tData != null && "English".equalsIgnoreCase(tData)){
+                    return firstSubService.getFirstSubCombinedListEng(id);
+                } else if (tData != null && "Malayalam".equalsIgnoreCase(tData)) {
+                    return firstSubService.getFirstSubCombinedListMal(id);
+                }else {
+                    return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

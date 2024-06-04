@@ -19,4 +19,6 @@ public interface Mp4Data1Repo extends JpaRepository<Mp4Data1,Integer> {
     List<Mp4Data1> findByMainMalId(String mainMalId);
 
     Optional<Mp4Data1> findByDtId(String dtId);
+
+    void deleteAllBydtId(String fsEngId);
 }

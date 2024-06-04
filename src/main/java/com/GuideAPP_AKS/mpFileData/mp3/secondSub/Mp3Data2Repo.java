@@ -8,4 +8,6 @@ public interface Mp3Data2Repo extends JpaRepository<Mp3Data2,Integer> {
     List<Mp3Data2> findBydtId(String ssUid);
 
     void deleteByDtId(String ssUid);
+
+    void deleteAllBydtId(String sEngId);
 }

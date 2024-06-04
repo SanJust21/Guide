@@ -2,10 +2,11 @@ package com.GuideAPP_AKS.img.secondSubHeading;
 
 import com.GuideAPP_AKS.img.firstSubHeading.ImgSubFirst;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+@Repository
 public interface ImgSubSecondRepo extends JpaRepository<ImgSubSecond,Integer> {
     List<ImgSubSecond> findByengId(String fsUid);
 
@@ -21,7 +22,14 @@ public interface ImgSubSecondRepo extends JpaRepository<ImgSubSecond,Integer> {
     List<ImgSubSecond> findByCommonId(String commonId);
 
     void deleteByCommonId(String commonId);
+    List<ImgSubSecond> findByfsMalUid(String malId);
+
+    List<ImgSubSecond> findByfsEngUid(String fsId);
+
+    void deleteAllByfsEngUid(String fsEngId);
 
 
     Optional<ImgSubSecond> findByImgIDAndCommonId(Integer imgId, String commonId);
+
+    void deleteAllByengId(String englishId);
 }

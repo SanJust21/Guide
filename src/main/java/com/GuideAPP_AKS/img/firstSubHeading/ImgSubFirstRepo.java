@@ -16,5 +16,7 @@ public interface ImgSubFirstRepo extends JpaRepository<ImgSubFirst,Integer> {
 
     void deleteByCommonId(String commonId);
 
+    void deleteAllByengId(String fsEngId);
+
     Optional<ImgSubFirst> findByImgIDAndCommonId(Integer imgId, String commonId);
 }

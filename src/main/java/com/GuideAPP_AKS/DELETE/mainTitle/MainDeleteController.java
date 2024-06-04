@@ -1,7 +1,6 @@
-package com.GuideAPP_AKS.DELETE;
+package com.GuideAPP_AKS.DELETE.mainTitle;
 
 import com.GuideAPP_AKS.UPDATE.MainTitle.MainUpdateService;
-import com.GuideAPP_AKS.img.ImgService;
 import com.GuideAPP_AKS.img.mainHeading.ImgRepo;
 import com.GuideAPP_AKS.mainHeading.mainEng.MainTitleEngRepo;
 import com.GuideAPP_AKS.mainHeading.mainMal.MainTitleMalRepo;

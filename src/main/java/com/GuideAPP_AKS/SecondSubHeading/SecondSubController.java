@@ -1,5 +1,6 @@
 package com.GuideAPP_AKS.SecondSubHeading;
 
+import com.GuideAPP_AKS.Language.DataType;
 import com.GuideAPP_AKS.Language.DataTypeRepo;
 import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglishRepo;
 import com.GuideAPP_AKS.SecondSubHeading.malayalam.SecondSubMalayalamRepo;
@@ -7,12 +8,15 @@ import com.GuideAPP_AKS.firstSubHeading.english.FirstSubEnglish;
 import com.GuideAPP_AKS.firstSubHeading.english.FirstSubEnglishRepo;
 import com.GuideAPP_AKS.firstSubHeading.malayalam.FirstSubMalayalam;
 import com.GuideAPP_AKS.firstSubHeading.malayalam.FirstSubMalayalamRepo;
+import com.GuideAPP_AKS.mainHeading.CombinedData;
 import com.GuideAPP_AKS.mainHeading.MainDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -65,27 +69,38 @@ public class SecondSubController {
         return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-//    @GetMapping(path = "/getSecondSubComplete")
-//    public ResponseEntity<List<CombinedDataSub>>getAllMainTitleData(@RequestParam Integer dtId){
-//        try {
-//            Optional<DataType> dataTypeOptional = dataTypeRepo.findById(dtId);
-//            if (dataTypeOptional.isPresent()){
-//                DataType dataType = dataTypeOptional.get();
-//                String tData = dataType.getTalk();
-//                if (tData != null && "English".equalsIgnoreCase(tData)){
-//                    return secondSubService.getCombinedListEng();
-//                } else if (tData != null && "Malayalam".equalsIgnoreCase(tData)) {
-//                    return secondSubService.getCombinedListMal();
-//                }else {
-//                    return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
-//                }
-//            }else {
-//                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
-//            }
-//
-//        }catch (Exception e){
-//            e.printStackTrace();
-//        }
-//        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @GetMapping(path = "/generateSSid")
+    public ResponseEntity<?>generateCommonSs(@RequestParam String englishId,
+                                             @RequestParam String malId){
+        try {
+            return secondSubService.generateCommonSs(englishId,malId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping(path = "/getSecondSub")
+    public ResponseEntity<List<CombinedDataSubSub>>getSecondTitleData(@RequestParam Integer dtId, @RequestParam String ssCommonId){
+        try {
+            Optional<DataType> dataTypeOptional = dataTypeRepo.findById(dtId);
+            if (dataTypeOptional.isPresent()){
+                DataType dataType = dataTypeOptional.get();
+                String tData = dataType.getTalk();
+                if (tData != null && "English".equalsIgnoreCase(tData)){
+                    return secondSubService.getCombinedList(ssCommonId);
+                } else if (tData != null && "Malayalam".equalsIgnoreCase(tData)) {
+                    return secondSubService.getCombinedListMal(ssCommonId);
+                }else {
+                    return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+                }
+            }else {
+                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

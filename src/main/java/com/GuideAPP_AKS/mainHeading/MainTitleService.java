@@ -5,11 +5,15 @@ import com.GuideAPP_AKS.Language.DataTypeRepo;
 import com.GuideAPP_AKS.QR.CommonIdQRCode;
 import com.GuideAPP_AKS.QR.CommonIdQRCodeRepo;
 import com.GuideAPP_AKS.SecondSubHeading.CombinedDataSubSub;
+import com.GuideAPP_AKS.SecondSubHeading.commonId.CommonIdSs;
+import com.GuideAPP_AKS.SecondSubHeading.commonId.CommonIdSsRepo;
 import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglish;
 import com.GuideAPP_AKS.SecondSubHeading.english.SecondSubEnglishRepo;
 import com.GuideAPP_AKS.SecondSubHeading.malayalam.SecondSubMalayalam;
 import com.GuideAPP_AKS.SecondSubHeading.malayalam.SecondSubMalayalamRepo;
 import com.GuideAPP_AKS.firstSubHeading.CombinedDataSub;
+import com.GuideAPP_AKS.firstSubHeading.FScommonId.CommonIdFs;
+import com.GuideAPP_AKS.firstSubHeading.FScommonId.FsCommonIdRepo;
 import com.GuideAPP_AKS.firstSubHeading.english.FirstSubEnglish;
 import com.GuideAPP_AKS.firstSubHeading.english.FirstSubEnglishRepo;
 import com.GuideAPP_AKS.firstSubHeading.malayalam.FirstSubMalayalam;
@@ -100,6 +104,12 @@ public class MainTitleService {
 
     @Autowired
     private DataTypeRepo dataTypeRepo;
+
+    @Autowired
+    private FsCommonIdRepo fsCommonIdRepo;
+
+    @Autowired
+    private CommonIdSsRepo commonIdSsRepo;
 
 
     public ResponseEntity<?> addMainTitleEng(MainDTO mainDTO) {
@@ -268,6 +278,13 @@ public class MainTitleService {
                     combinedDataSub.setuId(firstSubEnglish.getFsUid());
                     combinedDataSub.setmUid(mainId);
 
+                    CommonIdFs commonIdFs = fsCommonIdRepo.findByfsEngId(firstSubEnglish.getFsUid());
+                    if (commonIdFs!=null){
+                        combinedDataSub.setFsCommonId(commonIdFs.getFsCommonId());
+                        combinedDataSub.setFsEngId(commonIdFs.getFsEngId());
+                        combinedDataSub.setFsMalId(commonIdFs.getFsMalId());
+                    }
+
                     // Fetching images for the current first subheading
                     List<ImgSubFirst> imgSubFirstList = imgSubFirstRepo.findByEngId(firstSubEnglish.getFsUid());
                     imgSubFirstList.sort(Comparator.comparing(ImgSubFirst::getImgID));
@@ -295,6 +312,15 @@ public class MainTitleService {
                         combinedDataSubSub.setReferenceUrl(secondSubEnglish.getRef());
                         combinedDataSubSub.setuId(secondSubEnglish.getSsUid());
                         combinedDataSubSub.setmUid(secondSubEnglish.getFsUid());
+
+                        Optional<CommonIdSs> commonIdSs = commonIdSsRepo.findByssEngId(secondSubEnglish.getSsUid());
+                        if (commonIdSs.isPresent()){
+                            CommonIdSs commonIdSs1 = commonIdSs.get();
+                            combinedDataSubSub.setSsCommonId(commonIdSs1.getSsCommonId());
+                            combinedDataSubSub.setSsEngId(commonIdSs1.getSsEngId());
+                            combinedDataSubSub.setSsMalId(commonIdSs1.getSsMalId());
+                        }
+
                         // Fetching images for SecondSubEnglish
                         List<ImgSubSecond> imgSubSecondList = imgSubSecondRepo.findByengId(secondSubEnglish.getSsUid());
                         imgSubSecondList.sort(Comparator.comparing(ImgSubSecond::getImgID));
@@ -372,6 +398,13 @@ public class MainTitleService {
                     combinedDataSub.setuId(firstSubMalayalam.getFsUid());
                     combinedDataSub.setmUid(mainId);
 
+                    CommonIdFs commonIdFs = fsCommonIdRepo.findByfsMalId(firstSubMalayalam.getFsUid());
+                    if (commonIdFs!=null){
+                        combinedDataSub.setFsCommonId(commonIdFs.getFsCommonId());
+                        combinedDataSub.setFsEngId(commonIdFs.getFsEngId());
+                        combinedDataSub.setFsMalId(commonIdFs.getFsMalId());
+                    }
+
                     // Fetching images for the current first subheading
                     List<ImgSubFirst> imgSubFirstList = imgSubFirstRepo.findBymalId(firstSubMalayalam.getFsUid());
                     imgSubFirstList.sort(Comparator.comparing(ImgSubFirst::getImgID));
@@ -399,6 +432,15 @@ public class MainTitleService {
                         combinedDataSubSub.setReferenceUrl(secondSubMalayalam.getRef());
                         combinedDataSubSub.setuId(secondSubMalayalam.getSsUid());
                         combinedDataSubSub.setmUid(secondSubMalayalam.getFsUid());
+
+                        Optional<CommonIdSs> commonIdSs = commonIdSsRepo.findByssMalId(secondSubMalayalam.getSsUid());
+                        if (commonIdSs.isPresent()){
+                            CommonIdSs commonIdSs1 = commonIdSs.get();
+                            combinedDataSubSub.setSsCommonId(commonIdSs1.getSsCommonId());
+                            combinedDataSubSub.setSsEngId(commonIdSs1.getSsEngId());
+                            combinedDataSubSub.setSsMalId(commonIdSs1.getSsMalId());
+                        }
+
                         // Fetching images for SecondSubMalayalam
                         List<ImgSubSecond> imgSubSecondList = imgSubSecondRepo.findBymalId(secondSubMalayalam.getSsUid());
                         imgSubSecondList.sort(Comparator.comparing(ImgSubSecond::getImgID));
